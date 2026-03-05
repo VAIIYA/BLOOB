@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Germs.io</title>
+  <script type="module" crossorigin src="/assets/index-DLqp17Mk.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-B9O9lNPc.css">
+</head>
+<body>
+
+<!-- ===================== GAME CANVAS ===================== -->
+<canvas id="game-canvas"></canvas>
+
+<!-- ===================== HUD (in-game overlay) ===================== -->
+<div id="hud" class="hidden">
+  <div id="hud-top-left">
+    <div id="player-info">
+      <img src="https://germs.io/res/logo.png?v=2" alt="logo" id="hud-logo" />
+      <div id="xp-bar-wrap">
+        <div id="xp-label">Level 1 &nbsp;·&nbsp; <span id="xp-count">0/50 XP</span></div>
+        <div id="xp-bar"><div id="xp-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="hud-top-right">
+    <div id="leaderboard-panel">
+      <div class="lb-title">Leaderboard</div>
+      <ol id="leaderboard-list">
+        <li class="lb-item">Player1 <span>4200</span></li>
+        <li class="lb-item">Player2 <span>3800</span></li>
+        <li class="lb-item">Player3 <span>3100</span></li>
+        <li class="lb-item">Player4 <span>2500</span></li>
+        <li class="lb-item">Player5 <span>2000</span></li>
+        <li class="lb-item">Player6 <span>1800</span></li>
+        <li class="lb-item">Player7 <span>1400</span></li>
+        <li class="lb-item">Player8 <span>1100</span></li>
+        <li class="lb-item">Player9 <span>800</span></li>
+        <li class="lb-item">Player10 <span>600</span></li>
+      </ol>
+    </div>
+  </div>
+
+  <div id="hud-bottom">
+    <button class="hud-btn" id="btn-eject" title="Eject Mass (W)">
+      <img src="https://germs.io/res/eject.png" alt="Eject" />
+    </button>
+    <button class="hud-btn" id="btn-split" title="Split (Space)">
+      <img src="https://germs.io/res/split.png" alt="Split" />
+    </button>
+  </div>
+
+  <div id="chat-box">
+    <div id="chat-messages"></div>
+    <input id="chat-input" type="text" placeholder="Press Enter to chat..." maxlength="64" />
+  </div>
+
+  <div id="minimap">
+    <canvas id="minimap-canvas" width="120" height="120"></canvas>
+  </div>
+</div>
+
+<!-- ===================== MAIN MENU ===================== -->
+<div id="menu">
+
+  <!-- Logo -->
+  <div id="menu-logo-wrap">
+    <img src="https://germs.io/res/logo.png?v=2" alt="Germs.io" id="menu-logo" />
+  </div>
+
+  <!-- Social icons top-right -->
+  <div id="social-links">
+    <a href="https://discord.gg/GZzX5JW" target="_blank" rel="noreferrer">
+      <img src="https://germs.io/res/social/discord.png?v=5" alt="Discord" />
+    </a>
+    <a href="https://youtube.com/c/Germsio" target="_blank" rel="noreferrer">
+      <img src="https://germs.io/res/social/youtube.png?v=5" alt="YouTube" />
+    </a>
+    <a href="https://reddit.com/r/Germsio" target="_blank" rel="noreferrer">
+      <img src="https://germs.io/res/social/reddit.png?v=5" alt="Reddit" />
+    </a>
+    <a href="https://facebook.com/Germs.io" target="_blank" rel="noreferrer">
+      <img src="https://germs.io/res/social/facebook.png?v=5" alt="Facebook" />
+    </a>
+  </div>
+
+  <!-- Center card -->
+  <div id="menu-card">
+    <!-- Nick input -->
+    <div id="nick-row">
+      <span id="plus-icon">+</span>
+      <input id="nick-input" type="text" placeholder="Enter Nickname" maxlength="16" autocomplete="off" />
+    </div>
+
+    <!-- Skin preview area -->
+    <div id="skin-preview">
+      <canvas id="skin-canvas" width="80" height="80"></canvas>
+    </div>
+
+    <!-- Buttons -->
+    <div id="play-buttons">
+      <button id="btn-play" class="btn-primary">▶&nbsp; Play</button>
+      <button id="btn-spectate" class="btn-secondary">👁&nbsp; Spectate</button>
+    </div>
+
+    <!-- Settings link -->
+    <button id="btn-open-settings" class="btn-link">⚙ Settings</button>
+
+    <!-- Login prompt -->
+    <div id="login-prompt">
+      <div class="login-prompt-inner">
+        <strong>Sign in to access member only features, 100% free!</strong>
+        <ul>
+          <li>✔ Access to Public Chat</li>
+          <li>✔ Bonus Starting Mass</li>
+          <li>✔ Free Coins Every Day</li>
+        </ul>
+        <button class="btn-discord" id="btn-discord-login">
+          <img src="https://germs.io/res/social/discord.png?v=5" alt="" /> Sign in With Discord
+        </button>
+        <button class="btn-google" id="btn-google-login">
+          <svg viewBox="0 0 24 24" width="16" height="16"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Sign in With Google
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div id="menu-footer">
+    <a href="#" id="version-link">Version: 5.0.0</a>
+    <span class="footer-sep">|</span>
+    <a href="https://germs.io/txt/terms.html" target="_blank">Terms of Service</a>
+    <span class="footer-sep">|</span>
+    <a href="https://germs.io/txt/privacy.html" target="_blank">Privacy Policy</a>
+  </div>
+
+</div><!-- end #menu -->
+
+<!-- ===================== PANELS (Rankings / Skins / Settings) ===================== -->
+<div id="panel-backdrop" class="hidden"></div>
+
+<!-- RANKINGS PANEL -->
+<div id="panel-rankings" class="panel hidden">
+  <div class="panel-header">
+    <h2>Rankings</h2>
+    <div class="rankings-tabs">
+      <button class="rtab active" data-tab="levels">Levels</button>
+      <button class="rtab" data-tab="coins">Coins</button>
+    </div>
+    <button class="panel-close" data-panel="panel-rankings">✕</button>
+  </div>
+  <div class="panel-body">
+    <div class="rankings-sub-tabs">
+      <button class="rstab active"><img src="https://germs.io/res/locked.png?v=2" /> Locked</button>
+      <button class="rstab"><img src="https://germs.io/res/skins/veteran/kraken.png" /> Veteran</button>
+      <button class="rstab"><img src="https://germs.io/res/skins/premium/phoenix.png" /> Premium</button>
+      <button class="rstab"><img src="https://germs.io/res/coins.png" /> Coins</button>
+      <button class="rstab"><img src="https://germs.io/res/boost.png" /> Boosts</button>
+    </div>
+    <div class="rankings-list">
+      <div class="rank-row rank-locked">
+        <span class="rank-num">1</span>
+        <div class="rank-avatar"><img src="https://germs.io/res/locked.png?v=2" /></div>
+        <span class="rank-name">???</span>
+        <span class="rank-val">Locked</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SKINS PANEL -->
+<div id="panel-skins" class="panel hidden">
+  <div class="panel-header">
+    <h2>Skins</h2>
+    <button class="panel-close" data-panel="panel-skins">✕</button>
+  </div>
+  <div class="panel-body">
+    <div id="skins-login-notice">
+      <p>🔒 Login To Access Exclusive Member Skins!</p>
+    </div>
+    <div id="skins-search-row">
+      <input type="text" id="skins-search" placeholder="Search skins..." />
+      <button id="skins-clear-search">Clear Search</button>
+    </div>
+    <hr />
+    <div id="custom-skin-row">
+      <label>Custom Skin URL:</label>
+      <input type="text" id="custom-skin-url" placeholder="https://..." />
+      <button id="custom-skin-apply">Apply</button>
+    </div>
+    <h4>Owned Skins</h4>
+    <ul class="skin-list" id="owned-skins"><li><span>None</span></li></ul>
+    <h4>Free Skins</h4>
+    <ul class="skin-list" id="free-skins"><li><span>None</span></li></ul>
+  </div>
+</div>
+
+<!-- SETTINGS PANEL -->
+<div id="panel-settings" class="panel hidden">
+  <div class="panel-header">
+    <h2>Settings</h2>
+    <button class="panel-close" data-panel="panel-settings">✕</button>
+  </div>
+  <div class="panel-body">
+    <!-- Tab nav -->
+    <nav class="settings-tabs">
+      <a href="#settings-general" class="stab active">Gameplay</a>
+      <a href="#settings-graphics" class="stab">Themes</a>
+      <a href="#settings-controls" class="stab">Controls</a>
+      <a href="#settings-region" class="stab">Region</a>
+    </nav>
+
+    <!-- GENERAL -->
+    <section id="settings-general" class="settings-section">
+      <h3>General Options</h3>
+      <label class="toggle-row"><span>Skip Match Results</span><input type="checkbox" id="opt-skip-results" /><span class="toggle-slider"></span></label>
+
+      <h3>Render Options</h3>
+      <div class="setting-row">
+        <span>Show Names</span>
+        <div class="btn-group" data-key="showNames">
+          <button class="bg-btn active">All</button>
+          <button class="bg-btn">Party</button>
+          <button class="bg-btn">Self</button>
+          <button class="bg-btn">None</button>
+        </div>
+      </div>
+      <div class="setting-row">
+        <span>Show Skins</span>
+        <div class="btn-group" data-key="showSkins">
+          <button class="bg-btn active">All</button>
+          <button class="bg-btn">Party</button>
+          <button class="bg-btn">Self</button>
+          <button class="bg-btn">None</button>
+        </div>
+      </div>
+      <div class="setting-row">
+        <span>Animation Speed</span>
+        <input type="range" min="0" max="100" value="50" class="setting-slider" id="opt-anim-speed" />
+      </div>
+      <label class="toggle-row"><span>Auto Zoom</span><input type="checkbox" id="opt-auto-zoom" checked /><span class="toggle-slider"></span></label>
+      <label class="toggle-row"><span>Mouse Arrow</span><input type="checkbox" id="opt-mouse-arrow" /><span class="toggle-slider"></span></label>
+      <label class="toggle-row"><span>Show Mass</span><input type="checkbox" id="opt-show-mass" /><span class="toggle-slider"></span></label>
+      <label class="toggle-row"><span>Hide Food</span><input type="checkbox" id="opt-hide-food" /><span class="toggle-slider"></span></label>
+      <label class="toggle-row"><span>Hide Border</span><input type="checkbox" id="opt-hide-border" /><span class="toggle-slider"></span></label>
+
+      <h3>UI Options</h3>
+      <label class="toggle-row"><span>Disable Profanity Filter</span><input type="checkbox" id="opt-profanity" /><span class="toggle-slider"></span></label>
+      <label class="toggle-row"><span>Hide XP Bar</span><input type="checkbox" id="opt-hide-xp" /><span class="toggle-slider"></span></label>
+      <label class="toggle-row"><span>Hide Chat</span><input type="checkbox" id="opt-hide-chat" /><span class="toggle-slider"></span></label>
+    </section>
+
+    <!-- GRAPHICS / THEMES -->
+    <section id="settings-graphics" class="settings-section hidden">
+      <h3>Theme</h3>
+      <div class="theme-options">
+        <img src="https://germs.io/res/themes/hex.png?v=2" class="theme-opt active" data-theme="hex" title="Hex" />
+        <img src="https://germs.io/res/themes/grid.png?v=2" class="theme-opt" data-theme="grid" title="Grid" />
+        <img src="https://germs.io/res/themes/empty.png?v=2" class="theme-opt" data-theme="empty" title="Empty" />
+      </div>
+      <h3>Color</h3>
+      <div class="theme-options">
+        <img src="https://germs.io/res/themes/gray.png?v=2" class="theme-opt active" data-color="gray" title="Gray" />
+        <img src="https://germs.io/res/themes/white.png?v=2" class="theme-opt" data-color="white" title="White" />
+        <img src="https://germs.io/res/themes/black.png?v=2" class="theme-opt" data-color="black" title="Black" />
+      </div>
+    </section>
+
+    <!-- CONTROLS -->
+    <section id="settings-controls" class="settings-section hidden">
+      <h3>Keybinds</h3>
+      <button id="reset-controls" class="btn-secondary-sm">Reset Controls</button>
+      <div class="keybind-list">
+        <div class="keybind-row"><span>Feed</span><button class="keybind-btn" data-action="feed">W</button></div>
+        <div class="keybind-row"><span>Split</span><button class="keybind-btn" data-action="split">Space</button></div>
+        <div class="keybind-row"><span>Double Split</span><button class="keybind-btn" data-action="doublesplit">E</button></div>
+        <div class="keybind-row"><span>Triple Split</span><button class="keybind-btn" data-action="triplesplit">R</button></div>
+        <div class="keybind-row"><span>16x Split</span><button class="keybind-btn" data-action="16split">T</button></div>
+        <div class="keybind-row"><span>Freeze (Line Split)</span><button class="keybind-btn" data-action="freeze">Q</button></div>
+        <div class="keybind-row"><span>Vertical (Line Split)</span><button class="keybind-btn" data-action="vertical">F</button></div>
+        <div class="keybind-row"><span>Hide UI (For Clips)</span><button class="keybind-btn" data-action="hideui">H</button></div>
+      </div>
+    </section>
+
+    <!-- REGION -->
+    <section id="settings-region" class="settings-section hidden">
+      <h3>Server Region</h3>
+      <div class="region-list">
+        <label class="region-row"><input type="radio" name="region" value="na" checked /> North America</label>
+        <label class="region-row"><input type="radio" name="region" value="eu" /> Europe</label>
+        <label class="region-row"><input type="radio" name="region" value="as" /> Asia</label>
+        <label class="region-row"><input type="radio" name="region" value="au" /> Australia</label>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- MATCH RESULTS MODAL -->
+<div id="modal-results" class="modal hidden">
+  <div class="modal-inner">
+    <h2>Match Results</h2>
+    <div class="results-grid">
+      <div class="result-stat"><div class="result-val" id="res-food">6</div><div class="result-key">food eaten</div></div>
+      <div class="result-stat"><div class="result-val" id="res-mass">78</div><div class="result-key">highest mass</div></div>
+      <div class="result-stat"><div class="result-val" id="res-alive">0:05</div><div class="result-key">time alive</div></div>
+      <div class="result-stat"><div class="result-val" id="res-lb">0:04</div><div class="result-key">leaderboard time</div></div>
+      <div class="result-stat"><div class="result-val" id="res-cells">0</div><div class="result-key">cells eaten</div></div>
+      <div class="result-stat"><div class="result-val" id="res-pos">40</div><div class="result-key">top position</div></div>
+    </div>
+    <button id="btn-continue" class="btn-primary">Continue</button>
+  </div>
+</div>
+
+<!-- CONNECTING OVERLAY -->
+<div id="overlay-connecting" class="overlay hidden">
+  <div class="overlay-inner">
+    <div class="spinner"></div>
+    <h2>Connecting</h2>
+  </div>
+</div>
+
+<!-- MODES OVERLAY -->
+<div id="overlay-modes" class="overlay hidden">
+  <div class="overlay-inner">
+    <h3>Modes</h3>
+    <div class="mode-list">
+      <button class="mode-btn active" data-mode="ffa">Free For All</button>
+      <button class="mode-btn" data-mode="teams">Teams</button>
+      <button class="mode-btn" data-mode="battle">Battle Royale</button>
+      <button class="mode-btn" data-mode="experimental">Experimental</button>
+    </div>
+  </div>
+</div>
+
+<!-- PARTY PANEL -->
+<div id="panel-party" class="panel hidden">
+  <div class="panel-header">
+    <h2>Party</h2>
+    <p>Play with your friends</p>
+    <button class="panel-close" data-panel="panel-party">✕</button>
+  </div>
+  <div class="panel-body party-body">
+    <button class="btn-primary" id="party-create">Create</button>
+    <button class="btn-secondary" id="party-join">Join</button>
+    <div id="party-code-display" class="hidden">
+      <p>Share the code to your friends!</p>
+      <div class="party-code-box">
+        <span id="party-code-val">ABCD1234</span>
+        <button id="party-copy-code" class="btn-secondary-sm">Copy</button>
+      </div>
+    </div>
+    <div id="party-join-input" class="hidden">
+      <p>Enter the code from your friends!</p>
+      <input type="text" id="party-code-input" placeholder="ABCD1234" maxlength="8" />
+      <button class="btn-primary" id="party-join-confirm">Join</button>
+    </div>
+    <div id="party-members">
+      <div class="party-tabs">
+        <button class="ptab active">Party</button>
+        <button class="ptab">All</button>
+      </div>
+      <ul id="party-member-list">
+        <li class="party-member">
+          <span class="party-member-name">You</span>
+          <div class="party-member-actions">
+            <button>Invite To Party</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="party-actions">
+      <button class="party-action-btn danger" id="party-leave">Leave Party</button>
+      <button class="party-action-btn" id="party-screenshot">Screenshot</button>
+    </div>
+  </div>
+</div>
+
+<!-- EMOTES PANEL -->
+<div id="panel-emotes" class="panel hidden">
+  <div class="panel-header">
+    <h2>Emotes</h2>
+    <button class="panel-close" data-panel="panel-emotes">✕</button>
+  </div>
+  <div class="panel-body">
+    <div class="emote-grid">
+      <img src="https://germs.io/res/emotes/gsFace.png" class="emote" title="gsFace" />
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
