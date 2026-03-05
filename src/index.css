@@ -1,0 +1,113 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg-dark: #0d0d0f;
+  --bg-panel: #16181c;
+  --bg-panel2: #1e2128;
+  --bg-hover: #252830;
+  --accent: #3ecf60;
+  --accent-dark: #2aad4a;
+  --accent-glow: rgba(62, 207, 96, 0.3);
+  --red: #e74c3c;
+  --blue: #3498db;
+  --gold: #f1c40f;
+  --purple: #9b59b6;
+  --text-primary: #e8e8e8;
+  --text-secondary: #8a8f9a;
+  --text-muted: #555b6a;
+  --border: #2a2d36;
+  --border-light: #3a3e4a;
+  --radius: 8px;
+  --radius-lg: 14px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.5);
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: 'Exo 2', sans-serif;
+  overflow: hidden;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+/* Canvas background */
+canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg-panel); }
+::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 4px; }
+
+/* Buttons */
+button {
+  font-family: 'Exo 2', sans-serif;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+button:active { transform: scale(0.96); }
+
+input {
+  font-family: 'Exo 2', sans-serif;
+  outline: none;
+}
+
+/* Panel shared styles */
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
