@@ -9,25 +9,25 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	
 	<!-- CSS -->
-	<link rel="preload" href="res/logo.png?v=2" as="image">
-	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="preload" href="/res/logo.png?v=2" as="image">
+	<link rel="stylesheet" type="text/css" href="/css/style.css">
 	<link href="https://fonts.googleapis.com/css?family=Ubuntu:400,700,900|Roboto:300,400,700,900" rel="stylesheet">
-	<link rel="stylesheet" href="css/all.css" crossorigin="anonymous">
-	<link rel="stylesheet" type="text/css" href="css/color-picker.css">
+	<link rel="stylesheet" href="/css/all.css" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="/css/color-picker.css">
 
 	<!-- JQUERY -->
-	<script src="js/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+	<script src="/js/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
 
 	<!-- Boostrap -->
-	<link rel="stylesheet" href="css/bootstrap.min.css" crossorigin="anonymous">
-	<script src="js/popper.min.js" crossorigin="anonymous"></script>
-	<script src="js/bootstrap.min.js" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="/css/bootstrap.min.css" crossorigin="anonymous">
+	<script src="/js/popper.min.js" crossorigin="anonymous"></script>
+	<script src="/js/bootstrap.min.js" crossorigin="anonymous"></script>
 
 </head>
 
 <body>
 	<div id="loader">
-		<img id="loaderLogo" src="images/logo.png" class="flex-center nodrag">
+		<img id="loaderLogo" src="/images/logo.png" class="flex-center nodrag">
 	</div>
 
 	<!-- GAME CANVAS -->
@@ -64,34 +64,34 @@
 					<i class="fas fa-coins"></i> <span id="shopCoinAmount"></span>
 					<a onclick="shopTab('#shopNavCoins', '#shopTabCoins'); event.preventDefault();" href="#"><i class="fas fa-plus"></i></a>
 				</span>
-				<span id="shopBucks" class="nodrag"><img src="images/gbux.png" class="nodrag">
+				<span id="shopBucks" class="nodrag"><img src="/images/gbux.png" class="nodrag">
 					<span id="shopBucksAmount"></span>
 					<a onclick="shopTab(null, '#shopTabBucks'); event.preventDefault();" href="#"><i class="fas fa-plus"></i></a>
 				</span>
 				<ul id="shopNav">
 					<li class="active">
 						<a onclick="shopTab(this, '#shopTabLocked'); event.preventDefault();" href="#">
-							<img src="images/locked.png"> Locked
+							<img src="/images/locked.png"> Locked
 						</a>
 					</li>
 					<li>
 						<a onclick="shopTab(this, '#shopTabVeteran'); event.preventDefault();" href="#">
-							<img src="images/kraken.png"> Veteran
+							<img src="/images/kraken.png"> Veteran
 						</a>
 					</li>
 					<li>
 						<a onclick="shopTab(this, '#shopTabPremium'); event.preventDefault();" href="#">
-							<img src="images/phoenix.png"> Premium
+							<img src="/images/phoenix.png"> Premium
 						</a>
 					</li>
 					<li>
 						<a id="shopNavCoins" onclick="shopTab(this, '#shopTabCoins'); event.preventDefault();" href="#">
-							<img src="images/coins.png"> Coins
+							<img src="/images/coins.png"> Coins
 						</a>
 					</li>
 					<li>
 						<a onclick="shopTab(this, '#shopTabBoosts'); event.preventDefault();" href="#">
-							<img src="images/boost.png"> Boosts
+							<img src="/images/boost.png"> Boosts
 						</a>
 					</li>
 				</ul>
@@ -452,14 +452,14 @@
 
 			<div id="menuCenter" class="column text-center">
 
-				<img id="menuLogo" src="images/logo.png" class="nodrag">
+				<img id="menuLogo" src="/images/logo.png" class="nodrag">
 
 				<div class="card">
 					<div id="socialIcons" style="margin-bottom: 10px;">
-						<a href="https://discord.gg/GZzX5JW" target="_blank"><img class="social-icon nodrag" src="images/discord.png"></a>
-						<a href="https://youtube.com/c/Germsio" target="_blank"><img class="social-icon nodrag" src="images/youtube.png"></a>
-						<a href="https://reddit.com/r/Germsio" target="_blank"><img class="social-icon nodrag" src="images/reddit.png"></a>
-						<a href="https://facebook.com/Germs.io" target="_blank"><img class="social-icon nodrag" src="images/facebook.png"></a>
+						<a href="https://discord.gg/GZzX5JW" target="_blank"><img class="social-icon nodrag" src="/images/discord.png"></a>
+						<a href="https://youtube.com/c/Germsio" target="_blank"><img class="social-icon nodrag" src="/images/youtube.png"></a>
+						<a href="https://reddit.com/r/Germsio" target="_blank"><img class="social-icon nodrag" src="/images/reddit.png"></a>
+						<a href="https://facebook.com/Germs.io" target="_blank"><img class="social-icon nodrag" src="/images/facebook.png"></a>
 					</div>
 
 					<input id="nick" class="form-control" placeholder="Nickname" maxlength="25">
@@ -497,11 +497,11 @@
 						</p>
 
 						<button id="discordLogin" class="btn btn-info btn-sm" style="width:auto; margin-top:2px;">
-							<img src="images/discord.png" style="width:20px; border-radius:3px;">
+							<img src="/images/discord.png" style="width:20px; border-radius:3px;">
 							Sign in With Discord
 						</button>
 						<button id="googleLogin" class="btn btn-light btn-sm" style="width:auto; margin-top:2px; vertical-align: top;">
-							<img src="images/google.png" style="width:20px; border-radius:3px;">
+							<img src="/images/google.png" style="width:20px; border-radius:3px;">
 							Sign in With Google
 						</button>
 						<br>
@@ -640,7 +640,7 @@
 		<div id="login" class="nodrag">
 			<h4 id="loginName" class="nodrag">Not Logged In</h4>
 			<div id="loginContainer">
-				<img id="loginAvatar" class="nodrag" src="images/noskin.png">
+				<img id="loginAvatar" class="nodrag" src="/images/noskin.png">
 				<i id="loginLogout" class="fas fa-sign-out-alt" style="display: none;"></i>
 				<i id="loginSettings" style="display: none;" class="fas fa-edit"></i>
 			</div>
@@ -648,7 +648,7 @@
 			<span id="loginCoins"><span id="loginCoinAmount"></span> <i class="fas fa-coins"></i></span>
 
 			<p id="loginShop" class="nodrag">
-				<img class="nodrag" src="res/shop.png?v=2"><br>
+				<img class="nodrag" src="/res/shop.png?v=2"><br>
 				<span id="loginShopText">Shop</span>
 			</p>
 
@@ -716,7 +716,7 @@
 
 
 			<div id="btnEmote" class="nodrag">
-				<img src="res/emotes/gsFace.png" class="nodrag">
+				<img src="/res/emotes/gsFace.png" class="nodrag">
 			</div>
 
 
@@ -724,18 +724,18 @@
 
 				<h3>Emotes <span class="badge badge-secondary" style="font-size:10px; cursor: pointer; float:right; margin-right: 5px; margin-top:2px;" ><i class="fas fa-times nodrag"></i></span></h3>
 				<ul id="emotesList">
-					<li class="emotesEmote"><img name="gsFace" src="res/emotes/gsFace.png"></li>
-					<li class="emotesEmote"><img name="gsFace2" src="res/emotes/gsFace2.png"></li>
-					<li class="emotesEmote"><img name="gsCool" src="res/emotes/gsCool.png"></li>
-					<li class="emotesEmote"><img name="gsDevil" src="res/emotes/gsDevil.png"></li>
-					<li class="emotesEmote"><img name="gsDead" src="res/emotes/gsDead.png"></li>
-					<li class="emotesEmote"><img name="gsKiss" src="res/emotes/gsKiss.png"></li>
-					<li class="emotesEmote"><img name="gsMad" src="res/emotes/gsMad.png"></li>
-					<li class="emotesEmote"><img name="gsSick" src="res/emotes/gsSick.png"></li>
-					<li class="emotesEmote"><img name="gsCry" src="res/emotes/gsCry.png"></li>
-					<li class="emotesEmote"><img name="gsShock" src="res/emotes/gsShock.png"></li>
-					<li class="emotesEmote"><img name="gsInnocent" src="res/emotes/gsInnocent.png"></li>
-					<li class="emotesEmote"><img name="gsPoo" src="res/emotes/gsPoo.png"></li>
+					<li class="emotesEmote"><img name="gsFace" src="/res/emotes/gsFace.png"></li>
+					<li class="emotesEmote"><img name="gsFace2" src="/res/emotes/gsFace2.png"></li>
+					<li class="emotesEmote"><img name="gsCool" src="/res/emotes/gsCool.png"></li>
+					<li class="emotesEmote"><img name="gsDevil" src="/res/emotes/gsDevil.png"></li>
+					<li class="emotesEmote"><img name="gsDead" src="/res/emotes/gsDead.png"></li>
+					<li class="emotesEmote"><img name="gsKiss" src="/res/emotes/gsKiss.png"></li>
+					<li class="emotesEmote"><img name="gsMad" src="/res/emotes/gsMad.png"></li>
+					<li class="emotesEmote"><img name="gsSick" src="/res/emotes/gsSick.png"></li>
+					<li class="emotesEmote"><img name="gsCry" src="/res/emotes/gsCry.png"></li>
+					<li class="emotesEmote"><img name="gsShock" src="/res/emotes/gsShock.png"></li>
+					<li class="emotesEmote"><img name="gsInnocent" src="/res/emotes/gsInnocent.png"></li>
+					<li class="emotesEmote"><img name="gsPoo" src="/res/emotes/gsPoo.png"></li>
 
 				</ul>
 
@@ -762,8 +762,8 @@
 		<!-- MOBILE UI -->
 
 		<div id="mobile" class="nodrag disable-select">
-			<div id="btnEject" class="nodrag"><img src="res/eject.png"></div>
-			<div id="btnSplit" class="nodrag"><img src="res/split.png"></div>
+			<div id="btnEject" class="nodrag"><img src="/res/eject.png"></div>
+			<div id="btnSplit" class="nodrag"><img src="/res/split.png"></div>
 		</div>
 
 	</div>
@@ -771,7 +771,7 @@
 	<!-- USER MENU -->
 	<div id="userMenu" style="display:none;" class="nodrag">
 		<h4 id="userMenuPlayerName" class="nodrag"></h4>
-		<img id="userMenuPlayerSkin" class="nodrag" src="images/noskin.png">
+		<img id="userMenuPlayerSkin" class="nodrag" src="/images/noskin.png">
 		
 		<button class="btn btn-secondary btn-sm" id="userMenuInvite">Invite to Party</button>
 		

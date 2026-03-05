@@ -664,7 +664,7 @@ const backdrop = document.querySelector('#panel-backdrop');
 
 function openPanel(id) {
   closeAllPanels();
-  document.querySelector("#id).classList.remove('hidden');
+  document.querySelector(`#${id}`).classList.remove('hidden');
   backdrop.classList.remove('hidden');
 }
 
@@ -678,7 +678,7 @@ backdrop.addEventListener('click', closeAllPanels);
 document.querySelectorAll('.panel-close').forEach(btn => {
   btn.addEventListener('click', () => {
     const pid = btn.dataset.panel;
-    document.querySelector("#pid).classList.add('hidden');
+    document.querySelector(`#${pid}`).classList.add('hidden');
     // Close backdrop if no panels open
     if (!document.querySelector('.panel:not(.hidden)')) {
       backdrop.classList.add('hidden');
@@ -701,7 +701,7 @@ document.querySelectorAll('.stab').forEach(tab => {
 
     const target = tab.getAttribute('href').replace('#', '');
     document.querySelectorAll('.settings-section').forEach(sec => sec.classList.add('hidden'));
-    document.querySelector("#target).classList.remove('hidden');
+    document.querySelector(`#${target}`).classList.remove('hidden');
   });
 });
 
@@ -730,7 +730,7 @@ document.querySelectorAll('.btn-group').forEach(group => {
   ['opt-hide-xp', 'hideXP'],
   ['opt-hide-chat', 'hideChat'],
 ].forEach(([id, key]) => {
-  const el = document.querySelector("#id);
+  const el = document.querySelector(`#${id}`);
   if (!el) return;
   el.checked = !!state.settings[key];
   el.addEventListener('change', () => {
@@ -768,7 +768,7 @@ let listeningFor = null;
 document.querySelectorAll('.keybind-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     if (listeningFor) {
-      document.querySelector("#`.keybind-btn[data-action="${listeningFor}"]`)?.classList.remove('listening');
+      document.querySelector(`.keybind-btn[data-action="${listeningFor}"]`)?.classList.remove('listening');
     }
     listeningFor = btn.dataset.action;
     btn.textContent = '...';
@@ -781,7 +781,7 @@ document.addEventListener('keydown', e => {
     e.preventDefault();
     const key = e.code === 'Space' ? 'Space' : e.key.toUpperCase();
     state.settings.keybinds[listeningFor] = key;
-    const btn = document.querySelector("#`.keybind-btn[data-action="${listeningFor}"]`);
+    const btn = document.querySelector(`.keybind-btn[data-action="${listeningFor}"]`);
     if (btn) { btn.textContent = key; btn.classList.remove('listening'); }
     listeningFor = null;
     saveSettings();
