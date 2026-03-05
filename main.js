@@ -59,7 +59,7 @@ function saveSettings() {
 loadSettings();
 
 // ── Canvas Setup ────────────────────────────────────────────
-const canvas = document.getElementById('game-canvas');
+const canvas = document.querySelector('#gameCanvas');
 const ctx = canvas.getContext('2d');
 
 function resizeCanvas() {
@@ -206,8 +206,8 @@ function update(dt) {
     // Update leaderboard & XP (inside cells check to avoid ReferenceError)
     updateLeaderboard(totalMass);
 
-    const xpEl = document.getElementById('xp-fill');
-    const xpLbl = document.getElementById('xp-count');
+    const xpEl = document.querySelector('#xp-fill');
+    const xpLbl = document.querySelector('#xp-count');
     if (xpEl) {
       const xp = Math.min(state.score.food * 2, 50);
       xpEl.style.width = (xp / 50 * 100) + '%';
@@ -329,7 +329,7 @@ function update(dt) {
 }
 
 function updateLeaderboard(playerMass) {
-  const list = document.getElementById('leaderboard-list');
+  const list = document.querySelector('#leaderboardList');
   if (!list) return;
   const nick = state.nick || 'You';
   const entries = [
@@ -552,7 +552,7 @@ function renderMenuBackground() {
 }
 
 function drawSkinCanvas() {
-  const c = document.getElementById('skin-canvas');
+  const c = document.querySelector('#skin-canvas');
   if (!c) return;
   const cx = c.getContext('2d');
   const size = c.width;
@@ -585,13 +585,13 @@ function drawSkinCanvas() {
 }
 
 // ── Menu UI ──────────────────────────────────────────────────
-const menu = document.getElementById('menu');
-const hud = document.getElementById('hud');
+const menu = document.querySelector('#menu');
+const hud = document.querySelector('#hud');
 
-document.getElementById('btn-play').addEventListener('click', startGame);
-document.getElementById('btn-spectate').addEventListener('click', startSpectate);
+document.querySelector('#play').addEventListener('click', startGame);
+document.querySelector('#spectate').addEventListener('click', startSpectate);
 
-document.getElementById('nick-input').addEventListener('input', e => {
+document.querySelector('#nick').addEventListener('input', e => {
   state.nick = e.target.value;
   drawSkinCanvas();
 });
@@ -599,7 +599,7 @@ document.getElementById('nick-input').addEventListener('input', e => {
 function startGame() {
   state.inGame = true;
   state.spectating = false;
-  state.nick = document.getElementById('nick-input').value || 'Player';
+  state.nick = document.querySelector('#nick').value || 'Player';
   initWorld();
   menu.classList.add('hidden');
   hud.classList.remove('hidden');
@@ -616,7 +616,7 @@ function startSpectate() {
 }
 
 function showOverlayConnecting() {
-  const ov = document.getElementById('overlay-connecting');
+  const ov = document.querySelector('#connecting');
   ov.classList.remove('hidden');
   setTimeout(() => {
     ov.classList.add('hidden');
@@ -626,15 +626,15 @@ function showOverlayConnecting() {
 function endMatch() {
   state.inGame = false;
   const elapsed = Math.round((Date.now() - state.score.startTime) / 1000);
-  document.getElementById('res-food').textContent = state.score.food;
-  document.getElementById('res-mass').textContent = Math.round(state.score.maxMass);
-  document.getElementById('res-alive').textContent = formatTime(elapsed);
-  document.getElementById('res-lb').textContent = formatTime(Math.max(0, elapsed - 1));
-  document.getElementById('res-cells').textContent = state.score.cells;
-  document.getElementById('res-pos').textContent = Math.floor(Math.random() * 50) + 1;
+  document.querySelector('.stats-food-eaten').textContent = state.score.food;
+  document.querySelector('.stats-highest-mass').textContent = Math.round(state.score.maxMass);
+  document.querySelector('.stats-time-alive').textContent = formatTime(elapsed);
+  document.querySelector('.stats-leaderboard-time').textContent = formatTime(Math.max(0, elapsed - 1));
+  document.querySelector('.stats-cells-eaten').textContent = state.score.cells;
+  document.querySelector('.stats-top-position').textContent = Math.floor(Math.random() * 50) + 1;
 
   if (!state.settings.skipResults) {
-    document.getElementById('modal-results').classList.remove('hidden');
+    document.querySelector('#deathContainer').classList.remove('hidden');
   } else {
     returnToMenu();
   }
@@ -646,8 +646,8 @@ function formatTime(secs) {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
-document.getElementById('btn-continue').addEventListener('click', () => {
-  document.getElementById('modal-results').classList.add('hidden');
+document.querySelector('#continue').addEventListener('click', () => {
+  document.querySelector('#deathContainer').classList.add('hidden');
   returnToMenu();
 });
 
@@ -660,11 +660,11 @@ function returnToMenu() {
 }
 
 // ── Panels ────────────────────────────────────────────────────
-const backdrop = document.getElementById('panel-backdrop');
+const backdrop = document.querySelector('#panel-backdrop');
 
 function openPanel(id) {
   closeAllPanels();
-  document.getElementById(id).classList.remove('hidden');
+  document.querySelector("#id).classList.remove('hidden');
   backdrop.classList.remove('hidden');
 }
 
@@ -678,7 +678,7 @@ backdrop.addEventListener('click', closeAllPanels);
 document.querySelectorAll('.panel-close').forEach(btn => {
   btn.addEventListener('click', () => {
     const pid = btn.dataset.panel;
-    document.getElementById(pid).classList.add('hidden');
+    document.querySelector("#pid).classList.add('hidden');
     // Close backdrop if no panels open
     if (!document.querySelector('.panel:not(.hidden)')) {
       backdrop.classList.add('hidden');
@@ -687,7 +687,7 @@ document.querySelectorAll('.panel-close').forEach(btn => {
 });
 
 // Open settings from menu
-document.getElementById('btn-open-settings').addEventListener('click', () => {
+document.querySelector('#btn-open-settings').addEventListener('click', () => {
   openPanel('panel-settings');
 });
 
@@ -701,7 +701,7 @@ document.querySelectorAll('.stab').forEach(tab => {
 
     const target = tab.getAttribute('href').replace('#', '');
     document.querySelectorAll('.settings-section').forEach(sec => sec.classList.add('hidden'));
-    document.getElementById(target).classList.remove('hidden');
+    document.querySelector("#target).classList.remove('hidden');
   });
 });
 
@@ -730,7 +730,7 @@ document.querySelectorAll('.btn-group').forEach(group => {
   ['opt-hide-xp', 'hideXP'],
   ['opt-hide-chat', 'hideChat'],
 ].forEach(([id, key]) => {
-  const el = document.getElementById(id);
+  const el = document.querySelector("#id);
   if (!el) return;
   el.checked = !!state.settings[key];
   el.addEventListener('change', () => {
@@ -741,7 +741,7 @@ document.querySelectorAll('.btn-group').forEach(group => {
 });
 
 // Slider
-const animSlider = document.getElementById('opt-anim-speed');
+const animSlider = document.querySelector('#opt-anim-speed');
 if (animSlider) {
   animSlider.value = state.settings.animSpeed;
   animSlider.addEventListener('input', () => {
@@ -768,7 +768,7 @@ let listeningFor = null;
 document.querySelectorAll('.keybind-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     if (listeningFor) {
-      document.querySelector(`.keybind-btn[data-action="${listeningFor}"]`)?.classList.remove('listening');
+      document.querySelector("#`.keybind-btn[data-action="${listeningFor}"]`)?.classList.remove('listening');
     }
     listeningFor = btn.dataset.action;
     btn.textContent = '...';
@@ -781,7 +781,7 @@ document.addEventListener('keydown', e => {
     e.preventDefault();
     const key = e.code === 'Space' ? 'Space' : e.key.toUpperCase();
     state.settings.keybinds[listeningFor] = key;
-    const btn = document.querySelector(`.keybind-btn[data-action="${listeningFor}"]`);
+    const btn = document.querySelector("#`.keybind-btn[data-action="${listeningFor}"]`);
     if (btn) { btn.textContent = key; btn.classList.remove('listening'); }
     listeningFor = null;
     saveSettings();
@@ -805,11 +805,11 @@ document.addEventListener('keydown', e => {
     for (let i = 0; i < 4; i++) setTimeout(splitCells, i * 80);
   } else if (k === kb.hideui || k === 'H') {
     state.hudHidden = !state.hudHidden;
-    document.getElementById('hud').style.opacity = state.hudHidden ? '0' : '1';
+    document.querySelector('#hud').style.opacity = state.hudHidden ? '0' : '1';
   }
 });
 
-document.getElementById('reset-controls').addEventListener('click', () => {
+document.querySelector('#reset-controls').addEventListener('click', () => {
   state.settings.keybinds = {
     feed: 'W', split: 'Space', doublesplit: 'E',
     triplesplit: 'R', '16split': 'T', freeze: 'Q', vertical: 'F', hideui: 'H'
@@ -821,8 +821,8 @@ document.getElementById('reset-controls').addEventListener('click', () => {
 });
 
 function applySettings() {
-  const chatBox = document.getElementById('chat-box');
-  const xpBar = document.getElementById('hud-top-left');
+  const chatBox = document.querySelector('#chat');
+  const xpBar = document.querySelector('#hud');
   if (chatBox) chatBox.style.display = state.settings.hideChat ? 'none' : '';
   if (xpBar) xpBar.querySelector('#xp-bar-wrap').style.display = state.settings.hideXP ? 'none' : '';
 }
@@ -852,41 +852,41 @@ document.querySelectorAll('.rstab').forEach(tab => {
 });
 
 // ── Party ─────────────────────────────────────────────────────
-document.getElementById('party-create').addEventListener('click', () => {
+document.querySelector('#btnPartyCreate').addEventListener('click', () => {
   const code = Math.random().toString(36).substring(2, 10).toUpperCase();
   state.party.code = code;
-  document.getElementById('party-code-val').textContent = code;
-  document.getElementById('party-code-display').classList.remove('hidden');
-  document.getElementById('party-join-input').classList.add('hidden');
+  document.querySelector('#party_code_val').textContent = code;
+  document.querySelector('#party-code-display').classList.remove('hidden');
+  document.querySelector('#party-join-input').classList.add('hidden');
 });
 
-document.getElementById('party-join').addEventListener('click', () => {
-  document.getElementById('party-join-input').classList.remove('hidden');
-  document.getElementById('party-code-display').classList.add('hidden');
+document.querySelector('#party-join').addEventListener('click', () => {
+  document.querySelector('#party-join-input').classList.remove('hidden');
+  document.querySelector('#party-code-display').classList.add('hidden');
 });
 
-document.getElementById('party-copy-code').addEventListener('click', () => {
-  const code = document.getElementById('party-code-val').textContent;
+document.querySelector('#party-copy-code').addEventListener('click', () => {
+  const code = document.querySelector('#party_code_val').textContent;
   navigator.clipboard.writeText(code).catch(() => { });
-  document.getElementById('party-copy-code').textContent = 'Copied!';
-  setTimeout(() => { document.getElementById('party-copy-code').textContent = 'Copy'; }, 2000);
+  document.querySelector('#party-copy-code').textContent = 'Copied!';
+  setTimeout(() => { document.querySelector('#party-copy-code').textContent = 'Copy'; }, 2000);
 });
 
-document.getElementById('party-join-confirm').addEventListener('click', () => {
-  const code = document.getElementById('party-code-input').value.toUpperCase();
+document.querySelector('#btnPartyJoin').addEventListener('click', () => {
+  const code = document.querySelector('#party_code').value.toUpperCase();
   if (code.length >= 4) {
     state.party.code = code;
-    document.getElementById('party-code-val').textContent = code;
-    document.getElementById('party-code-display').classList.remove('hidden');
-    document.getElementById('party-join-input').classList.add('hidden');
-    document.getElementById('party-code-input').value = '';
+    document.querySelector('#party_code_val').textContent = code;
+    document.querySelector('#party-code-display').classList.remove('hidden');
+    document.querySelector('#party-join-input').classList.add('hidden');
+    document.querySelector('#party_code').value = '';
   }
 });
 
-document.getElementById('party-leave').addEventListener('click', () => {
+document.querySelector('#btnPartyLeave').addEventListener('click', () => {
   state.party.code = null;
-  document.getElementById('party-code-display').classList.add('hidden');
-  document.getElementById('party-join-input').classList.add('hidden');
+  document.querySelector('#party-code-display').classList.add('hidden');
+  document.querySelector('#party-join-input').classList.add('hidden');
 });
 
 // Party tabs
@@ -959,19 +959,19 @@ function ejectMass() {
 }
 
 // HUD buttons
-document.getElementById('btn-eject').addEventListener('click', () => { if (state.inGame) ejectMass(); });
-document.getElementById('btn-split').addEventListener('click', () => { if (state.inGame) splitCells(); });
+document.querySelector('#btn-eject').addEventListener('click', () => { if (state.inGame) ejectMass(); });
+document.querySelector('#btn-split').addEventListener('click', () => { if (state.inGame) splitCells(); });
 
 // ── Chat ──────────────────────────────────────────────────────
-document.getElementById('chat-input').addEventListener('keydown', e => {
+document.querySelector('#chat_input').addEventListener('keydown', e => {
   if (e.key === 'Enter') {
     const msg = e.target.value.trim();
     if (msg) {
       const div = document.createElement('div');
       div.textContent = `${state.nick || 'You'}: ${msg}`;
       div.style.cssText = 'font-size:11px;color:#ccc;padding:2px 0;';
-      document.getElementById('chat-messages').appendChild(div);
-      document.getElementById('chat-messages').scrollTop = 9999;
+      document.querySelector('#tabs').appendChild(div);
+      document.querySelector('#tabs').scrollTop = 9999;
       e.target.value = '';
     }
   }
@@ -979,28 +979,28 @@ document.getElementById('chat-input').addEventListener('keydown', e => {
 });
 
 // ── Login stubs ───────────────────────────────────────────────
-document.getElementById('btn-discord-login').addEventListener('click', () => {
+document.querySelector('#btn-discord-login').addEventListener('click', () => {
   alert('Discord login would be implemented server-side.');
 });
 
-document.getElementById('btn-google-login').addEventListener('click', () => {
+document.querySelector('#btn-google-login').addEventListener('click', () => {
   alert('Google login would be implemented server-side.');
 });
 
 // ── Version link ──────────────────────────────────────────────
-document.getElementById('version-link').addEventListener('click', e => {
+document.querySelector('#version').addEventListener('click', e => {
   e.preventDefault();
   openPanel('panel-settings');
 });
 
 // ── Custom skin ───────────────────────────────────────────────
-document.getElementById('custom-skin-apply').addEventListener('click', () => {
-  const url = document.getElementById('custom-skin-url').value.trim();
+document.querySelector('#custom-skin-apply').addEventListener('click', () => {
+  const url = document.querySelector('#custom-skin-url').value.trim();
   if (url) {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
-      const c = document.getElementById('skin-canvas');
+      const c = document.querySelector('#skin-canvas');
       const cx = c.getContext('2d');
       cx.clearRect(0, 0, c.width, c.height);
       cx.beginPath();
@@ -1015,7 +1015,7 @@ document.getElementById('custom-skin-apply').addEventListener('click', () => {
 // ── Minimap ───────────────────────────────────────────────────
 function drawMinimap() {
   if (!state.inGame) return;
-  const mc = document.getElementById('minimap-canvas');
+  const mc = document.querySelector('#minimap');
   const mx = mc.getContext('2d');
   const mw = mc.width, mh = mc.height;
   mx.clearRect(0, 0, mw, mh);

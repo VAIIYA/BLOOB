@@ -1,394 +1,815 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Germs.io</title>
-  <link rel="stylesheet" href="/style.css" />
+<!DOCTYPE html><html><head>
+
+	<!-- TITLE -->
+	<title>Germs.io Clone</title>
+
+	<!-- META -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge;charset=utf-8" charset="utf8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	
+	<!-- CSS -->
+	<link rel="preload" href="res/logo.png?v=2" as="image">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link href="https://fonts.googleapis.com/css?family=Ubuntu:400,700,900|Roboto:300,400,700,900" rel="stylesheet">
+	<link rel="stylesheet" href="css/all.css" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="css/color-picker.css">
+
+	<!-- JQUERY -->
+	<script src="js/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+
+	<!-- Boostrap -->
+	<link rel="stylesheet" href="css/bootstrap.min.css" crossorigin="anonymous">
+	<script src="js/popper.min.js" crossorigin="anonymous"></script>
+	<script src="js/bootstrap.min.js" crossorigin="anonymous"></script>
+
 </head>
+
 <body>
+	<div id="loader">
+		<img id="loaderLogo" src="images/logo.png" class="flex-center nodrag">
+	</div>
 
-<!-- ===================== GAME CANVAS ===================== -->
-<canvas id="game-canvas"></canvas>
+	<!-- GAME CANVAS -->
+	<canvas id="gameCanvas"></canvas>
 
-<!-- ===================== HUD (in-game overlay) ===================== -->
-<div id="hud" class="hidden">
-  <div id="hud-top-left">
-    <div id="player-info">
-      <img src="https://germs.io/res/logo.png?v=2" alt="logo" id="hud-logo" />
-      <div id="xp-bar-wrap">
-        <div id="xp-label">Level 1 &nbsp;·&nbsp; <span id="xp-count">0/50 XP</span></div>
-        <div id="xp-bar"><div id="xp-fill" style="width:0%"></div></div>
-      </div>
-    </div>
-  </div>
+	<div id="menu">
+		<div id="rankings" style="display:none;" onclick="hideRankings(event);">
+			<div id="rankingsCard" class="card">
+				<h1>Rankings</h1>
+				<div id="rankingsSelect" class="form-group">
+					<select class="form-control" id="rankingsSelect" onchange="showRankings(this.value);">
+						<option value="Levels" selected="selected">Levels</option>
+						<option value="Coins">Coins</option>
+					</select>
+				</div>
+				<div id="rankingsList">
+					<table class="table table-striped table-dark">
+						<thead id="rankingsHead">
+						</thead>
+						<tbody id="rankingsTable">
+						</tbody>
+					</table>
+				</div>
+				<div id="rankingsClose" onclick="hideRankings();">
+					<i class="fa fa-times"></i>
+				</div>
+			</div>
+		</div>
+		<div id="shop" style="display:none;" onclick="hideShop(event);">
+			<div id="shopCard" class="card">
+				<img id="shopAvatar" src="#">
+				<h5 id="shopName" class="nodrag"></h5>
+				<span id="shopCoins" class="nodrag">
+					<i class="fas fa-coins"></i> <span id="shopCoinAmount"></span>
+					<a onclick="shopTab('#shopNavCoins', '#shopTabCoins'); event.preventDefault();" href="#"><i class="fas fa-plus"></i></a>
+				</span>
+				<span id="shopBucks" class="nodrag"><img src="images/gbux.png" class="nodrag">
+					<span id="shopBucksAmount"></span>
+					<a onclick="shopTab(null, '#shopTabBucks'); event.preventDefault();" href="#"><i class="fas fa-plus"></i></a>
+				</span>
+				<ul id="shopNav">
+					<li class="active">
+						<a onclick="shopTab(this, '#shopTabLocked'); event.preventDefault();" href="#">
+							<img src="images/locked.png"> Locked
+						</a>
+					</li>
+					<li>
+						<a onclick="shopTab(this, '#shopTabVeteran'); event.preventDefault();" href="#">
+							<img src="images/kraken.png"> Veteran
+						</a>
+					</li>
+					<li>
+						<a onclick="shopTab(this, '#shopTabPremium'); event.preventDefault();" href="#">
+							<img src="images/phoenix.png"> Premium
+						</a>
+					</li>
+					<li>
+						<a id="shopNavCoins" onclick="shopTab(this, '#shopTabCoins'); event.preventDefault();" href="#">
+							<img src="images/coins.png"> Coins
+						</a>
+					</li>
+					<li>
+						<a onclick="shopTab(this, '#shopTabBoosts'); event.preventDefault();" href="#">
+							<img src="images/boost.png"> Boosts
+						</a>
+					</li>
+				</ul>
 
-  <div id="hud-top-right">
-    <div id="leaderboard-panel">
-      <div class="lb-title">Leaderboard</div>
-      <ol id="leaderboard-list">
-        <li class="lb-item">Player1 <span>4200</span></li>
-        <li class="lb-item">Player2 <span>3800</span></li>
-        <li class="lb-item">Player3 <span>3100</span></li>
-        <li class="lb-item">Player4 <span>2500</span></li>
-        <li class="lb-item">Player5 <span>2000</span></li>
-        <li class="lb-item">Player6 <span>1800</span></li>
-        <li class="lb-item">Player7 <span>1400</span></li>
-        <li class="lb-item">Player8 <span>1100</span></li>
-        <li class="lb-item">Player9 <span>800</span></li>
-        <li class="lb-item">Player10 <span>600</span></li>
-      </ol>
-    </div>
-  </div>
+				<ul id="shopContent">
+					<li class="active" id="shopTabLocked">
+						<h1>Locked</h1>
+					</li>
+					<li id="shopTabVeteran">
+						<h1>Veteran</h1>
+					</li>
+					<li id="shopTabPremium">
+						<h1>Premium</h1>
+					</li>
+					<li id="shopTabCoins">
+						<h1>Coins</h1>
+					</li>
+					<li id="shopTabBoosts">
+						<h1>Boosts</h1>
+					</li>
+					<li id="shopTabBucks">
+						<h1>Bucks</h1>
+					</li>
+				</ul>
 
-  <div id="hud-bottom">
-    <button class="hud-btn" id="btn-eject" title="Eject Mass (W)">
-      <img src="https://germs.io/res/eject.png" alt="Eject" />
-    </button>
-    <button class="hud-btn" id="btn-split" title="Split (Space)">
-      <img src="https://germs.io/res/split.png" alt="Split" />
-    </button>
-  </div>
+				<div id="shopClose" onclick="hideShop();">
+					<i class="fa fa-times"></i>
+				</div>
+			</div>
+		</div>
+		<div id="skins" style="display:none;" onclick="hideSkins(event);">
+			<div id="skinsCard" class="card">
+				<h1>Skins</h1>
+				<h5 id="skinsLoginMessage">Login To Access Exclusive Member Skins!</h5>
 
-  <div id="chat-box">
-    <div id="chat-messages"></div>
-    <input id="chat-input" type="text" placeholder="Press Enter to chat..." maxlength="64" />
-  </div>
+				<form onsubmit="searchSkin($('#searchText').val()); event.preventDefault(); return false;">
+					<input type="text" placeholder="Search" class="form-control" id="searchText" spellcheck="off" autocomplete="off">
+				</form>
 
-  <div id="minimap">
-    <canvas id="minimap-canvas" width="120" height="120"></canvas>
-  </div>
-</div>
+				<button class="btn btn-info navbar-btn btn-s" type="button" id="clearSearch" onclick="clearSearch(); $('#searchText').val(''); $('#clearSearch').hide();">Clear Search</button>
 
-<!-- ===================== MAIN MENU ===================== -->
-<div id="menu">
+				<div id="skinsClose" onclick="hideSkins();">
+					<i class="fa fa-times"></i>
+				</div>
 
-  <!-- Logo -->
-  <div id="menu-logo-wrap">
-    <img src="https://germs.io/res/logo.png?v=2" alt="Germs.io" id="menu-logo" />
-  </div>
+				<hr>
 
-  <!-- Social icons top-right -->
-  <div id="social-links">
-    <a href="https://discord.gg/GZzX5JW" target="_blank" rel="noreferrer">
-      <img src="https://germs.io/res/social/discord.png?v=5" alt="Discord" />
-    </a>
-    <a href="https://youtube.com/c/Germsio" target="_blank" rel="noreferrer">
-      <img src="https://germs.io/res/social/youtube.png?v=5" alt="YouTube" />
-    </a>
-    <a href="https://reddit.com/r/Germsio" target="_blank" rel="noreferrer">
-      <img src="https://germs.io/res/social/reddit.png?v=5" alt="Reddit" />
-    </a>
-    <a href="https://facebook.com/Germs.io" target="_blank" rel="noreferrer">
-      <img src="https://germs.io/res/social/facebook.png?v=5" alt="Facebook" />
-    </a>
-  </div>
+				<div id="skinContainer">
+					<ul class="skinList">
+						<div id="customSkin">
+							<span class="badge badge-pill badge-primary" style="margin-bottom: 15px;width: 100%;font-size: 17px;">Custom Skin</span>
+							<p>URL:</p>
+							<input id="loginCustom" class="form-control" placeholder="https://" value="https://" maxlength="250">
+							<button class="btn btn-primary" onclick="setSkin($('#loginCustom').val()); hideSkins();">Set Custom Skin</button>
+						</div>
 
-  <!-- Center card -->
-  <div id="menu-card">
-    <!-- Nick input -->
-    <div id="nick-row">
-      <span id="plus-icon">+</span>
-      <input id="nick-input" type="text" placeholder="Enter Nickname" maxlength="16" autocomplete="off" />
-    </div>
+						<h3 id="paidSkinCategory">Paid <i class="fas fa-coins"></i></h3>
+						<div id="paidSkinList"></div>
 
-    <!-- Skin preview area -->
-    <div id="skin-preview">
-      <canvas id="skin-canvas" width="80" height="80"></canvas>
-    </div>
+						<h3>Free <i class="fas fa-unlock"></i></h3>
+						<div id="freeSkinList"></div>
 
-    <!-- Buttons -->
-    <div id="play-buttons">
-      <button id="btn-play" class="btn-primary">▶&nbsp; Play</button>
-      <button id="btn-spectate" class="btn-secondary">👁&nbsp; Spectate</button>
-    </div>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div id="settings" style="display:none;" onclick="hideSettings(event);">
+			<div id="settingsCard" class="card">
+				<h1>Settings</h1>
 
-    <!-- Settings link -->
-    <button id="btn-open-settings" class="btn-link">⚙ Settings</button>
+				<div id="settingsClose" onclick="hideSettings();">
+					<i class="fa fa-times"></i>
+				</div>
 
-    <!-- Login prompt -->
-    <div id="login-prompt">
-      <div class="login-prompt-inner">
-        <strong>Sign in to access member only features, 100% free!</strong>
-        <ul>
-          <li>✔ Access to Public Chat</li>
-          <li>✔ Bonus Starting Mass</li>
-          <li>✔ Free Coins Every Day</li>
-        </ul>
-        <button class="btn-discord" id="btn-discord-login">
-          <img src="https://germs.io/res/social/discord.png?v=5" alt="" /> Sign in With Discord
-        </button>
-        <button class="btn-google" id="btn-google-login">
-          <svg viewBox="0 0 24 24" width="16" height="16"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-          Sign in With Google
-        </button>
-      </div>
-    </div>
-  </div>
+				<ul class="nav nav-pills nav-justified" id="settingsTabs" role="tablist">
+					<li class="nav-item">
+						<a class="nav-link active" data-toggle="tab" href="#settings-general">General</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="tab" href="#settings-graphics">Graphics</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="tab" href="#settings-controls">Controls</a>
+					</li>
+				</ul>
 
-  <!-- Footer -->
-  <div id="menu-footer">
-    <a href="#" id="version-link">Version: 5.0.0</a>
-    <span class="footer-sep">|</span>
-    <a href="https://germs.io/txt/terms.html" target="_blank">Terms of Service</a>
-    <span class="footer-sep">|</span>
-    <a href="https://germs.io/txt/privacy.html" target="_blank">Privacy Policy</a>
-  </div>
+				<div class="tab-content" id="settingsTabsContent">
 
-</div><!-- end #menu -->
+					<!-- GENERAL -->
+					<div class="tab-pane fade show active" id="settings-general" role="tabpanel">
 
-<!-- ===================== PANELS (Rankings / Skins / Settings) ===================== -->
-<div id="panel-backdrop" class="hidden"></div>
+						<div class="row">
+							<div class="col-sm-6 column text-center">
 
-<!-- RANKINGS PANEL -->
-<div id="panel-rankings" class="panel hidden">
-  <div class="panel-header">
-    <h2>Rankings</h2>
-    <div class="rankings-tabs">
-      <button class="rtab active" data-tab="levels">Levels</button>
-      <button class="rtab" data-tab="coins">Coins</button>
-    </div>
-    <button class="panel-close" data-panel="panel-rankings">✕</button>
-  </div>
-  <div class="panel-body">
-    <div class="rankings-sub-tabs">
-      <button class="rstab active"><img src="https://germs.io/res/locked.png?v=2" /> Locked</button>
-      <button class="rstab"><img src="https://germs.io/res/skins/veteran/kraken.png" /> Veteran</button>
-      <button class="rstab"><img src="https://germs.io/res/skins/premium/phoenix.png" /> Premium</button>
-      <button class="rstab"><img src="https://germs.io/res/coins.png" /> Coins</button>
-      <button class="rstab"><img src="https://germs.io/res/boost.png" /> Boosts</button>
-    </div>
-    <div class="rankings-list">
-      <div class="rank-row rank-locked">
-        <span class="rank-num">1</span>
-        <div class="rank-avatar"><img src="https://germs.io/res/locked.png?v=2" /></div>
-        <span class="rank-name">???</span>
-        <span class="rank-val">Locked</span>
-      </div>
-    </div>
-  </div>
-</div>
+								<div class="row">
+									<div class="col-sm-6 text-right">
+										<p style="margin-top: 5px;">Server Region</p>
+									</div>
+									<div class="col-sm-6 text-left">
+										<div class="dropdown">
+											<button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="region" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+												North America
+											</button>
+											<div class="dropdown-menu" aria-labelledby="region">
+												<a class="dropdown-item" id="regionNA" href="#" onclick="setRegion('na');">North America</a>
+												<a class="dropdown-item" id="regionEU" href="#" onclick="setRegion('eu');">Europe</a>
+												<a class="dropdown-item" id="regionAS" href="#" onclick="setRegion('as');">Asia</a>
+												<a class="dropdown-item" id="regionTest" href="#" onclick="setRegion('test');" style="display:none;">Test</a>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<label><input type="checkbox" id="skipDeathScreen" onchange="changeSetting(this);"> Skip Match Results</label>
 
-<!-- SKINS PANEL -->
-<div id="panel-skins" class="panel hidden">
-  <div class="panel-header">
-    <h2>Skins</h2>
-    <button class="panel-close" data-panel="panel-skins">✕</button>
-  </div>
-  <div class="panel-body">
-    <div id="skins-login-notice">
-      <p>🔒 Login To Access Exclusive Member Skins!</p>
-    </div>
-    <div id="skins-search-row">
-      <input type="text" id="skins-search" placeholder="Search skins..." />
-      <button id="skins-clear-search">Clear Search</button>
-    </div>
-    <hr />
-    <div id="custom-skin-row">
-      <label>Custom Skin URL:</label>
-      <input type="text" id="custom-skin-url" placeholder="https://..." />
-      <button id="custom-skin-apply">Apply</button>
-    </div>
-    <h4>Owned Skins</h4>
-    <ul class="skin-list" id="owned-skins"><li><span>None</span></li></ul>
-    <h4>Free Skins</h4>
-    <ul class="skin-list" id="free-skins"><li><span>None</span></li></ul>
-  </div>
-</div>
+							</div>
 
-<!-- SETTINGS PANEL -->
-<div id="panel-settings" class="panel hidden">
-  <div class="panel-header">
-    <h2>Settings</h2>
-    <button class="panel-close" data-panel="panel-settings">✕</button>
-  </div>
-  <div class="panel-body">
-    <!-- Tab nav -->
-    <nav class="settings-tabs">
-      <a href="#settings-general" class="stab active">Gameplay</a>
-      <a href="#settings-graphics" class="stab">Themes</a>
-      <a href="#settings-controls" class="stab">Controls</a>
-      <a href="#settings-region" class="stab">Region</a>
-    </nav>
+							<div class="col-sm-6 column text-center">
+							</div>
 
-    <!-- GENERAL -->
-    <section id="settings-general" class="settings-section">
-      <h3>General Options</h3>
-      <label class="toggle-row"><span>Skip Match Results</span><input type="checkbox" id="opt-skip-results" /><span class="toggle-slider"></span></label>
+						</div>
 
-      <h3>Render Options</h3>
-      <div class="setting-row">
-        <span>Show Names</span>
-        <div class="btn-group" data-key="showNames">
-          <button class="bg-btn active">All</button>
-          <button class="bg-btn">Party</button>
-          <button class="bg-btn">Self</button>
-          <button class="bg-btn">None</button>
-        </div>
-      </div>
-      <div class="setting-row">
-        <span>Show Skins</span>
-        <div class="btn-group" data-key="showSkins">
-          <button class="bg-btn active">All</button>
-          <button class="bg-btn">Party</button>
-          <button class="bg-btn">Self</button>
-          <button class="bg-btn">None</button>
-        </div>
-      </div>
-      <div class="setting-row">
-        <span>Animation Speed</span>
-        <input type="range" min="0" max="100" value="50" class="setting-slider" id="opt-anim-speed" />
-      </div>
-      <label class="toggle-row"><span>Auto Zoom</span><input type="checkbox" id="opt-auto-zoom" checked /><span class="toggle-slider"></span></label>
-      <label class="toggle-row"><span>Mouse Arrow</span><input type="checkbox" id="opt-mouse-arrow" /><span class="toggle-slider"></span></label>
-      <label class="toggle-row"><span>Show Mass</span><input type="checkbox" id="opt-show-mass" /><span class="toggle-slider"></span></label>
-      <label class="toggle-row"><span>Hide Food</span><input type="checkbox" id="opt-hide-food" /><span class="toggle-slider"></span></label>
-      <label class="toggle-row"><span>Hide Border</span><input type="checkbox" id="opt-hide-border" /><span class="toggle-slider"></span></label>
+					</div>
 
-      <h3>UI Options</h3>
-      <label class="toggle-row"><span>Disable Profanity Filter</span><input type="checkbox" id="opt-profanity" /><span class="toggle-slider"></span></label>
-      <label class="toggle-row"><span>Hide XP Bar</span><input type="checkbox" id="opt-hide-xp" /><span class="toggle-slider"></span></label>
-      <label class="toggle-row"><span>Hide Chat</span><input type="checkbox" id="opt-hide-chat" /><span class="toggle-slider"></span></label>
-    </section>
+					<!-- GRAPHICS -->
+					<div class="tab-pane fade" id="settings-graphics" role="tabpanel">
+						<div class="row">
+							<div class="col-sm-6 column text-center">
 
-    <!-- GRAPHICS / THEMES -->
-    <section id="settings-graphics" class="settings-section hidden">
-      <h3>Theme</h3>
-      <div class="theme-options">
-        <img src="https://germs.io/res/themes/hex.png?v=2" class="theme-opt active" data-theme="hex" title="Hex" />
-        <img src="https://germs.io/res/themes/grid.png?v=2" class="theme-opt" data-theme="grid" title="Grid" />
-        <img src="https://germs.io/res/themes/empty.png?v=2" class="theme-opt" data-theme="empty" title="Empty" />
-      </div>
-      <h3>Color</h3>
-      <div class="theme-options">
-        <img src="https://germs.io/res/themes/gray.png?v=2" class="theme-opt active" data-color="gray" title="Gray" />
-        <img src="https://germs.io/res/themes/white.png?v=2" class="theme-opt" data-color="white" title="White" />
-        <img src="https://germs.io/res/themes/black.png?v=2" class="theme-opt" data-color="black" title="Black" />
-      </div>
-    </section>
 
-    <!-- CONTROLS -->
-    <section id="settings-controls" class="settings-section hidden">
-      <h3>Keybinds</h3>
-      <button id="reset-controls" class="btn-secondary-sm">Reset Controls</button>
-      <div class="keybind-list">
-        <div class="keybind-row"><span>Feed</span><button class="keybind-btn" data-action="feed">W</button></div>
-        <div class="keybind-row"><span>Split</span><button class="keybind-btn" data-action="split">Space</button></div>
-        <div class="keybind-row"><span>Double Split</span><button class="keybind-btn" data-action="doublesplit">E</button></div>
-        <div class="keybind-row"><span>Triple Split</span><button class="keybind-btn" data-action="triplesplit">R</button></div>
-        <div class="keybind-row"><span>16x Split</span><button class="keybind-btn" data-action="16split">T</button></div>
-        <div class="keybind-row"><span>Freeze (Line Split)</span><button class="keybind-btn" data-action="freeze">Q</button></div>
-        <div class="keybind-row"><span>Vertical (Line Split)</span><button class="keybind-btn" data-action="vertical">F</button></div>
-        <div class="keybind-row"><span>Hide UI (For Clips)</span><button class="keybind-btn" data-action="hideui">H</button></div>
-      </div>
-    </section>
+								<div class="row">
+									<div class="col-sm-6 text-right">
+										<p style="margin-top: 5px;">Theme</p>
+									</div>
+									<div class="col-sm-6 text-left">
+										<div class="dropdown">
+											<button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="theme" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+												Hex
+											</button>
+											<div class="dropdown-menu" id="themes" aria-labelledby="theme">
+												<a class="dropdown-item active" id="theme-hex" href="#" onclick="setTheme('hex');">Hex</a>
+												<a class="dropdown-item" id="theme-grid" href="#" onclick="setTheme('grid');">Grid</a>
+												<a class="dropdown-item" id="theme-empty" href="#" onclick="setTheme('empty');">Empty</a>
+											</div>
+										</div>
+									</div>
+								</div>
 
-    <!-- REGION -->
-    <section id="settings-region" class="settings-section hidden">
-      <h3>Server Region</h3>
-      <div class="region-list">
-        <label class="region-row"><input type="radio" name="region" value="na" checked /> North America</label>
-        <label class="region-row"><input type="radio" name="region" value="eu" /> Europe</label>
-        <label class="region-row"><input type="radio" name="region" value="as" /> Asia</label>
-        <label class="region-row"><input type="radio" name="region" value="au" /> Australia</label>
-      </div>
-    </section>
-  </div>
-</div>
 
-<!-- MATCH RESULTS MODAL -->
-<div id="modal-results" class="modal hidden">
-  <div class="modal-inner">
-    <h2>Match Results</h2>
-    <div class="results-grid">
-      <div class="result-stat"><div class="result-val" id="res-food">6</div><div class="result-key">food eaten</div></div>
-      <div class="result-stat"><div class="result-val" id="res-mass">78</div><div class="result-key">highest mass</div></div>
-      <div class="result-stat"><div class="result-val" id="res-alive">0:05</div><div class="result-key">time alive</div></div>
-      <div class="result-stat"><div class="result-val" id="res-lb">0:04</div><div class="result-key">leaderboard time</div></div>
-      <div class="result-stat"><div class="result-val" id="res-cells">0</div><div class="result-key">cells eaten</div></div>
-      <div class="result-stat"><div class="result-val" id="res-pos">40</div><div class="result-key">top position</div></div>
-    </div>
-    <button id="btn-continue" class="btn-primary">Continue</button>
-  </div>
-</div>
+								<div class="row">
+									<div class="col-sm-6 text-right">
+										<p style="margin-top: 5px;">Color</p>
+									</div>
+									<div class="col-sm-6 text-left">
+										<div class="dropdown">
+											<button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="color" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+												Gray
+											</button>
+											<div class="dropdown-menu" id="colors" aria-labelledby="color">
+												<a class="dropdown-item active" id="color-gray" href="#" onclick="setTheme(null, 'gray');">Gray</a>
+												<a class="dropdown-item" id="color-white" href="#" onclick="setTheme(null, 'white');">White</a>
+												<a class="dropdown-item" id="color-black" href="#" onclick="setTheme(null, 'black');">Black</a>
+											</div>
+										</div>
+									</div>
+								</div>
 
-<!-- CONNECTING OVERLAY -->
-<div id="overlay-connecting" class="overlay hidden">
-  <div class="overlay-inner">
-    <div class="spinner"></div>
-    <h2>Connecting</h2>
-  </div>
-</div>
 
-<!-- MODES OVERLAY -->
-<div id="overlay-modes" class="overlay hidden">
-  <div class="overlay-inner">
-    <h3>Modes</h3>
-    <div class="mode-list">
-      <button class="mode-btn active" data-mode="ffa">Free For All</button>
-      <button class="mode-btn" data-mode="teams">Teams</button>
-      <button class="mode-btn" data-mode="battle">Battle Royale</button>
-      <button class="mode-btn" data-mode="experimental">Experimental</button>
-    </div>
-  </div>
-</div>
+								<div class="row">
+									<div class="col-sm-6 text-right">
+										<p style="margin-top: 5px;">Show Names</p>
+									</div>
+									<div class="col-sm-6 text-left">
+										<div class="dropdown">
+											<button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="showNames" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+												All
+											</button>
+											<div class="dropdown-menu" id="showNamesMenu" aria-labelledby="showNames">
+												<a class="dropdown-item active" href="#" onclick="changeSetting('showNames', 'All');">All</a>
+												<a class="dropdown-item" href="#" onclick="changeSetting('showNames', 'Party');">Party</a>
+												<a class="dropdown-item" href="#" onclick="changeSetting('showNames', 'Self');">Self</a>
+												<a class="dropdown-item" href="#" onclick="changeSetting('showNames', 'None');">None</a>
+											</div>
+										</div>
+									</div>
+								</div>
 
-<!-- PARTY PANEL -->
-<div id="panel-party" class="panel hidden">
-  <div class="panel-header">
-    <h2>Party</h2>
-    <p>Play with your friends</p>
-    <button class="panel-close" data-panel="panel-party">✕</button>
-  </div>
-  <div class="panel-body party-body">
-    <button class="btn-primary" id="party-create">Create</button>
-    <button class="btn-secondary" id="party-join">Join</button>
-    <div id="party-code-display" class="hidden">
-      <p>Share the code to your friends!</p>
-      <div class="party-code-box">
-        <span id="party-code-val">ABCD1234</span>
-        <button id="party-copy-code" class="btn-secondary-sm">Copy</button>
-      </div>
-    </div>
-    <div id="party-join-input" class="hidden">
-      <p>Enter the code from your friends!</p>
-      <input type="text" id="party-code-input" placeholder="ABCD1234" maxlength="8" />
-      <button class="btn-primary" id="party-join-confirm">Join</button>
-    </div>
-    <div id="party-members">
-      <div class="party-tabs">
-        <button class="ptab active">Party</button>
-        <button class="ptab">All</button>
-      </div>
-      <ul id="party-member-list">
-        <li class="party-member">
-          <span class="party-member-name">You</span>
-          <div class="party-member-actions">
-            <button>Invite To Party</button>
-          </div>
-        </li>
-      </ul>
-    </div>
-    <div class="party-actions">
-      <button class="party-action-btn danger" id="party-leave">Leave Party</button>
-      <button class="party-action-btn" id="party-screenshot">Screenshot</button>
-    </div>
-  </div>
-</div>
+								<div class="row">
+									<div class="col-sm-6 text-right">
+										<p style="margin-top: 5px;">Show Skins</p>
+									</div>
+									<div class="col-sm-6 text-left">
+										<div class="dropdown">
+											<button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="showSkins" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+												All
+											</button>
+											<div class="dropdown-menu" id="showSkinsMenu" aria-labelledby="showSkins">
+												<a class="dropdown-item active" href="#" onclick="changeSetting('showSkins', 'All');">All</a>
+												<a class="dropdown-item" href="#" onclick="changeSetting('showSkins', 'Party');">Party</a>
+												<a class="dropdown-item" href="#" onclick="changeSetting('showSkins', 'Self');">Self</a>
+												<a class="dropdown-item" href="#" onclick="changeSetting('showSkins', 'None');">None</a>
+											</div>
+										</div>
+									</div>
+								</div>
 
-<!-- EMOTES PANEL -->
-<div id="panel-emotes" class="panel hidden">
-  <div class="panel-header">
-    <h2>Emotes</h2>
-    <button class="panel-close" data-panel="panel-emotes">✕</button>
-  </div>
-  <div class="panel-body">
-    <div class="emote-grid">
-      <img src="https://germs.io/res/emotes/gsFace.png" class="emote" title="gsFace" />
-    </div>
-  </div>
-</div>
 
-<script type="module" src="/main.js"></script>
-</body>
-</html>
+								<p class="mb-0">Animation Delay <span class="badge badge-secondary" id="animationDelayBadge">100ms</span></p>
+								<input type="range" class="custom-range" id="animationDelay" onchange="changeSetting(this);" value="100" min="0" max="250" step="10">
+
+
+							</div>
+
+							<div class="col-sm-6 column text-center">
+
+								<label><input type="checkbox" id="autoZoom" onchange="changeSetting(this);" checked=""> Auto Zoom</label>
+								<label><input type="checkbox" id="mouseArrow" onchange="changeSetting(this);"> Mouse Arrow</label>
+								<label><input type="checkbox" id="showMass" onchange="changeSetting(this);"> Show Mass</label>
+								<label><input type="checkbox" id="hideFood" onchange="changeSetting(this);"> Hide Food</label>
+								<label><input type="checkbox" id="hideBorder" onchange="changeSetting(this);"> Hide Border</label>
+
+								<hr>
+
+								<label><input type="checkbox" id="disableProfanityFilter" onchange="changeSetting(this);"> Disable Profanity Filter</label>
+								<label><input type="checkbox" id="hideXP" onchange="changeSetting(this);"> Hide XP Bar</label>
+								<label><input type="checkbox" id="hideChat" class="hideChat" onchange="changeSetting(this);"> Hide Chat</label>
+
+
+							</div>
+						</div>
+					</div>
+
+					<!-- CONTROLS -->
+					<div class="tab-pane fade" id="settings-controls" role="tabpanel">
+
+						<div class="row">
+							<div class="col-sm-6 text-right">
+								<p style="margin-top: 5px;">Feed</p>
+							</div>
+							<div class="col-sm-6 text-left">
+								<input type="text" class="form-control form-control-sm" id="keyFeed" readonly="">
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-sm-6 text-right">
+								<p style="margin-top: 5px;">Split</p>
+							</div>
+							<div class="col-sm-6 text-left">
+								<input type="text" class="form-control form-control-sm" id="keySplit" readonly="">
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-sm-6 text-right">
+								<p style="margin-top: 5px;">Double Split</p>
+							</div>
+							<div class="col-sm-6 text-left">
+								<input type="text" class="form-control form-control-sm" id="keyDouble" readonly="">
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-sm-6 text-right">
+								<p style="margin-top: 5px;">Triple Split</p>
+							</div>
+							<div class="col-sm-6 text-left">
+								<input type="text" class="form-control form-control-sm" id="keyTriple" readonly="">
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-sm-6 text-right">
+								<p style="margin-top: 5px;">16x Split</p>
+							</div>
+							<div class="col-sm-6 text-left">
+								<input type="text" class="form-control form-control-sm" id="key16x" readonly="">
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-sm-6 text-right">
+								<p style="margin-top: 5px;">Freeze <i>(Line Split)</i></p>
+							</div>
+							<div class="col-sm-6 text-left">
+								<input type="text" class="form-control form-control-sm" id="keyFreeze" readonly="">
+							</div>
+						</div>
+						
+						<div class="row">
+							<div class="col-sm-6 text-right">
+								<p style="margin-top: 5px;">Vertical <i>(Line Split)</i></p>
+							</div>
+							<div class="col-sm-6 text-left">
+								<input type="text" class="form-control form-control-sm" id="keyVertical" readonly="">
+							</div>
+						</div>
+						
+						
+						<div class="row">
+							<div class="col-sm-6 text-right">
+								<p style="margin-top: 5px;">Spectate Free Mode</p>
+							</div>
+							<div class="col-sm-6 text-left">
+								<input type="text" class="form-control form-control-sm" id="keySpectate" readonly="">
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-sm-6 text-right">
+								<p style="margin-top: 5px;">Hide UI <i>(For Clips)</i></p>
+							</div>
+							<div class="col-sm-6 text-left">
+								<input type="text" class="form-control form-control-sm" id="keyHide" readonly="">
+							</div>
+						</div>
+						<div class="row" style="margin-bottom: 20px;">
+							<button class="btn btn-secondary btn-sm" style="width:100%;margin-top:10px;" id="resetControls">Reset Controls To
+								Default</button>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+		<div id="gamemodes" style="display:none;" onclick="hideModes(event);">
+
+			<div id="modesCard" class="card">
+				<h1>Modes</h1>
+
+				<div id="modesClose" onclick="hideModes();">
+					<i class="fa fa-times"></i>
+				</div>
+
+				<div id="modesContainer">
+					
+				</div>
+			</div>
+		</div>
+
+		<div id="menuContainer">
+
+			<div id="menuLeft" class="column">
+
+				<div class="card" style="margin-bottom: 10px;">
+					<h2>Welcome to <br> Germs.io!</h2>
+					<p style="margin-top: 10px;">Enjoy lag-free agario! Play with friends in realtime, or dominate the server in true battle royale fashion.</p>
+				</div>
+				
+				<div class="card">
+					<div id="money-square"></div>
+				</div>
+
+				<div style="height: 10px; width: 100%;"></div>
+
+			</div>
+
+			<div id="menuCenter" class="column text-center">
+
+				<img id="menuLogo" src="images/logo.png" class="nodrag">
+
+				<div class="card">
+					<div id="socialIcons" style="margin-bottom: 10px;">
+						<a href="https://discord.gg/GZzX5JW" target="_blank"><img class="social-icon nodrag" src="images/discord.png"></a>
+						<a href="https://youtube.com/c/Germsio" target="_blank"><img class="social-icon nodrag" src="images/youtube.png"></a>
+						<a href="https://reddit.com/r/Germsio" target="_blank"><img class="social-icon nodrag" src="images/reddit.png"></a>
+						<a href="https://facebook.com/Germs.io" target="_blank"><img class="social-icon nodrag" src="images/facebook.png"></a>
+					</div>
+
+					<input id="nick" class="form-control" placeholder="Nickname" maxlength="25">
+					<div class="input-group" style="padding: 10px; padding-bottom: 2px;">
+						<button id="play" class="btn btn-primary">
+							Play
+						</button>
+						<button id="spectate" class="btn btn-secondary">
+							Spectate
+						</button>
+					</div>
+
+					<div class="input-group" style="padding: 10px; padding-top: 5px;">
+						<button id="settingsButton" class="btn btn-info">
+							<i class="fas fa-cog"></i> Settings
+						</button>
+					</div>
+					
+					<div class="input-group" style="padding: 10px; padding-top: 5px;" id="installContainer">
+					
+					</div>
+
+					<div id="loginContainer" style="display:none; margin-top:5px;">
+						<hr style="margin-bottom: 5px;">
+
+						<h5 style="margin-bottom:5px;">Sign in to access member only features, <span style="color:#00ff00;">100% free!</span></h5>
+						<p style="-webkit-margin-after:0; font-size:15px; color:#2196F3;"><i class="fas fa-check"></i>
+							Access to Public Chat
+						</p>
+						<p style="-webkit-margin-after:0; font-size:15px; color:#2196F3;"><i class="fas fa-check"></i>
+							Bonus Starting Mass
+						</p>
+						<p style="-webkit-margin-after:7px; font-size:15px; color:#2196F3;"><i class="fas fa-check"></i>
+							Free Coins Every Day
+						</p>
+
+						<button id="discordLogin" class="btn btn-info btn-sm" style="width:auto; margin-top:2px;">
+							<img src="images/discord.png" style="width:20px; border-radius:3px;">
+							Sign in With Discord
+						</button>
+						<button id="googleLogin" class="btn btn-light btn-sm" style="width:auto; margin-top:2px; vertical-align: top;">
+							<img src="images/google.png" style="width:20px; border-radius:3px;">
+							Sign in With Google
+						</button>
+						<br>
+
+						<div style="font-size:12px; line-height:12px; margin-top:7px; margin-bottom:-4px;">We'll never
+							post to your timeline</div>
+
+					</div>
+
+
+				</div>
+
+
+			</div>
+			<div id="menuRight" class="column text-center">
+				<div class="card" style="padding-bottom: 2px;">
+					<h3 style="margin-top: 4px;margin-bottom: -20px;">Mode</h3>
+
+					<div class="input-group" style="padding: 10px; padding-top: 25px;">
+						<button class="btn btn-secondary btn-sm" style="width:100%; font-size:22px;font-family: Ubuntu;">
+							<span id="currentMode" style="pointer-events: none;">Free For All</span>
+						</button>
+					</div>
+
+					<button id="moreServers" class="btn btn-secondary btn-sm" style="width:100%">
+						More Servers <i class="fas fa-server"></i>
+					</button>
+
+					<div id="moreServersList" style="display:none;">
+
+					</div>
+
+
+				</div>
+				<div class="card" style="background:#55565B; margin-top: 10px;">
+					<div id="money-square_2">
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div style="font-size:14px; position:absolute; bottom: 10px; color:#c7c7c7; text-align:center; left: 0; right: 0;">
+			<a href="#" style="color:#c7c7c7;" id="version"></a> |
+			<a href="txt/terms.html" style="color:#c7c7c7;" target="_blank">Terms of Service</a> |
+			<a href="txt/privacy.html" style="color:#c7c7c7;" target="_blank">Privacy Policy</a> |
+			<a href="https://reddit.com/r/Germsio" style="color:#c7c7c7;" target="_blank">Changelog</a> <br>
+		</div>
+	</div>
+
+	<div id="deathContainer" style="display:none;">
+
+		<div id="deathCenter" class="column text-center">
+
+			<div class="card" style="height: 520px;">
+				<div id="money-top-death">
+				</div>
+
+				<h1 id="deathResult">Match Results</h1>
+				<hr>
+				<table class="table table-striped table-dark text-left" id="stats">
+					<tbody>
+						<tr>
+							<th scope="row">Food Eaten</th>
+							<td class="stats-food-eaten"></td>
+						</tr>
+						<tr>
+							<th scope="row">Highest Mass</th>
+							<td class="stats-highest-mass"></td>
+						</tr>
+						<tr>
+							<th scope="row">Time Alive</th>
+							<td class="stats-time-alive"></td>
+						</tr>
+						<tr>
+							<th scope="row">Leaderboard Time</th>
+							<td class="stats-leaderboard-time"></td>
+						</tr>
+						<tr>
+							<th scope="row">Cells Eaten</th>
+							<td class="stats-cells-eaten"></td>
+						</tr>
+						<tr>
+							<th scope="row">Top Position</th>
+							<td class="stats-top-position"></td>
+						</tr>
+					</tbody>
+				</table>
+
+
+				<div class="input-group" style="padding: 10px;">
+					<button id="continue" class="btn btn-primary" style="height: 45px;font-weight: 700; width: 100%; font-size: 20px; z-index: 1020;">
+						Continue
+					</button>
+
+					<div id="money-bottom-death">
+					</div>
+				</div>
+
+			</div>
+
+
+		</div>
+	</div>
+
+
+	<div id="connecting" style="display:none;" class="nodrag text-center">
+		<h1>Connecting</h1>
+		<div class="spinner">
+			<div class="rect1"></div>
+			<div class="rect2"></div>
+			<div class="rect3"></div>
+			<div class="rect4"></div>
+			<div class="rect5"></div>
+		</div>
+	</div>
+	
+	<div id="updating" style="display:none;" class="nodrag text-center">
+		<h1>Updating Client...</h1>
+		<div class="spinner">
+			<div class="rect1"></div>
+			<div class="rect2"></div>
+			<div class="rect3"></div>
+			<div class="rect4"></div>
+			<div class="rect5"></div>
+		</div>
+	</div>
+
+	<div id="money-top" class="nodrag text-center"></div>
+
+	<div id="money-bottom" class="nodrag text-center"></div>
+
+	<div id="hud" style="display:none;" class="nodrag">
+
+		<!-- UPPER LEFT -->
+
+		<div id="login" class="nodrag">
+			<h4 id="loginName" class="nodrag">Not Logged In</h4>
+			<div id="loginContainer">
+				<img id="loginAvatar" class="nodrag" src="images/noskin.png">
+				<i id="loginLogout" class="fas fa-sign-out-alt" style="display: none;"></i>
+				<i id="loginSettings" style="display: none;" class="fas fa-edit"></i>
+			</div>
+
+			<span id="loginCoins"><span id="loginCoinAmount"></span> <i class="fas fa-coins"></i></span>
+
+			<p id="loginShop" class="nodrag">
+				<img class="nodrag" src="res/shop.png?v=2"><br>
+				<span id="loginShopText">Shop</span>
+			</p>
+
+			<div id="loginStar">
+				<h4 id="loginLevel" class="nodrag">0</h4>
+			</div>
+
+
+			<div id="loginProgress" class="progress">
+				<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;"></div>
+				<h4 id="loginEXP" class="nodrag">0 / 0</h4>
+			</div>
+
+			<div id="loginReward" class="nodrag" style="display:none;"></div>
+			
+			<div id="loginXPBoost" class="loginReward nodrag" style="display:none;"></div>
+			<div id="loginMassBoost" class="loginReward nodrag" style="display:none;"></div>
+			<div id="loginNextLevel" class="loginReward nodrag" style="display:none;"></div>
+			<div id="loginNextSkin" class="loginReward nodrag" style="display:none;"></div>
+
+		</div>
+
+		<!-- UPPER RIGHT -->
+
+		<div id="leaderboard" class="nodrag">
+			<h3 class="nodrag">Leaderboard</h3>
+			<ul id="leaderboardList"></ul>
+		</div>
+
+		<div id="debug" class="nodrag" style="display:none;">
+			<div id="debugText" class="nodrag"></div>
+		</div>
+
+		<div id="party" class="nodrag">
+			<div id="partyText" class="nodrag"></div>
+		</div>
+
+		<div id="xpCenter">
+			<div id="xpProgressContainer">
+				<div id="xpLevel" class="nodrag"></div>
+				<div id="xpProgress" class="progress nodrag">
+					<div class="progress-bar" role="progressbar" style="width: 100%;"></div>
+					<div id="xpEXP" class="nodrag"></div>
+				</div>
+			</div>
+		</div>
+
+
+		<div id="chat" class="nodrag">
+			<div class="chatTab" id="tabs">
+				<div id="adminMessage"></div>
+			</div>
+
+			<input type="text" id="chat_input" placeholder="Enter Message" maxlength="64" spellcheck="true" class="nodrag">
+
+			<div id="btnChannel" class="nodrag">
+				<i class="fas fa-users"></i>
+			</div>
+
+			<ul id="channels" class="nodrag" style="display:none;">
+				<li class="active" id="btnChannelAll"><i class="fas fa-globe up"></i> All</li>
+				<li id="btnChannelParty" style="display:none;"><i class="fas fa-users up"></i> Party</li>
+				<li id="btnChannelTeam" style="display:none;"><i class="fas fa-user-friends up"></i> Team</li>
+			</ul>
+
+
+			<div id="btnEmote" class="nodrag">
+				<img src="res/emotes/gsFace.png" class="nodrag">
+			</div>
+
+
+			<div id="emotes" class="nodrag" style="display:none;">
+
+				<h3>Emotes <span class="badge badge-secondary" style="font-size:10px; cursor: pointer; float:right; margin-right: 5px; margin-top:2px;" ><i class="fas fa-times nodrag"></i></span></h3>
+				<ul id="emotesList">
+					<li class="emotesEmote"><img name="gsFace" src="res/emotes/gsFace.png"></li>
+					<li class="emotesEmote"><img name="gsFace2" src="res/emotes/gsFace2.png"></li>
+					<li class="emotesEmote"><img name="gsCool" src="res/emotes/gsCool.png"></li>
+					<li class="emotesEmote"><img name="gsDevil" src="res/emotes/gsDevil.png"></li>
+					<li class="emotesEmote"><img name="gsDead" src="res/emotes/gsDead.png"></li>
+					<li class="emotesEmote"><img name="gsKiss" src="res/emotes/gsKiss.png"></li>
+					<li class="emotesEmote"><img name="gsMad" src="res/emotes/gsMad.png"></li>
+					<li class="emotesEmote"><img name="gsSick" src="res/emotes/gsSick.png"></li>
+					<li class="emotesEmote"><img name="gsCry" src="res/emotes/gsCry.png"></li>
+					<li class="emotesEmote"><img name="gsShock" src="res/emotes/gsShock.png"></li>
+					<li class="emotesEmote"><img name="gsInnocent" src="res/emotes/gsInnocent.png"></li>
+					<li class="emotesEmote"><img name="gsPoo" src="res/emotes/gsPoo.png"></li>
+
+				</ul>
+
+			</div>
+
+
+
+		</div>
+
+
+		<button id="chat_toggle" class="nodrag hideChat" style="display:none;">
+			<i class="fas fa-comment-slash"></i>
+		</button>
+
+		<!-- LOWER RIGHT -->
+
+		<div id="map" class="nodrag">
+			<div id="mapPlayer" class="nodrag"></div>
+			<div class="mapPartyMember nodrag" style="top: 10px; left: 10px;">
+				<p>1</p>
+			</div>
+		</div>
+
+		<!-- MOBILE UI -->
+
+		<div id="mobile" class="nodrag disable-select">
+			<div id="btnEject" class="nodrag"><img src="res/eject.png"></div>
+			<div id="btnSplit" class="nodrag"><img src="res/split.png"></div>
+		</div>
+
+	</div>
+
+	<!-- USER MENU -->
+	<div id="userMenu" style="display:none;" class="nodrag">
+		<h4 id="userMenuPlayerName" class="nodrag"></h4>
+		<img id="userMenuPlayerSkin" class="nodrag" src="images/noskin.png">
+		
+		<button class="btn btn-secondary btn-sm" id="userMenuInvite">Invite to Party</button>
+		
+		<button class="btn btn-info btn-sm" id="userMenuBlock"><i class="fas fa-comment-slash"></i> <span id="userMenuBlockText">Mute Player</span></button>
+	</div>
+	
+	<!-- CUSTOM SKIN -->
+	<div id="custom" style="display:none;">
+		<div id="customCard" class="card">
+			
+			<i id="loginSettingsClose" class="fas fa-times"></i>
+			
+			<div id="loginCustomLocked">
+				<h5 style="margin-top:5px;" class="nodrag">Redeem Code</h5>
+				<div class="input-group mb-3" style="margin-bottom: 5px !important;transform: scale(0.95);">
+					  <input id="loginLockedNameRedeem" type="text" class="form-control" placeholder="Redeem Code">
+					  <div class="input-group-append">
+						<button class="btn btn-info" type="button">Redeem</button>
+					  </div>
+				</div>
+			
+				<hr>
+				<h5 style="margin-top:5px;" class="nodrag">Locked Name</h5>
+				<p id="lockedNameExpire" class="nodrag"></p>
+				<p id="lockedNameColor" class="nodrag">Color:</p>
+				<div id="lockedNameColorPicker"></div>
+				
+				<p id="lockedNamePosition" class="nodrag">Position:</p>
+				<select id="lockedNamePositionSelect">
+				  <option>Upper</option>
+				  <option selected="">Center</option>
+				  <option>Lower</option>
+				</select>
+			</div>
+			
+		</div>
+	</div>
+
+	<!-- VITE REPLACEMENT SCRIPT -->
+    <script type="module" src="/main.js"></script>
+</body></html>
