@@ -58,6 +58,20 @@ function saveSettings() {
 
 loadSettings();
 
+// Helper to hide loader
+function hideLoader() {
+  const loader = document.querySelector('#loader');
+  if (loader) {
+    loader.style.opacity = '0';
+    setTimeout(() => loader.style.display = 'none', 500);
+  }
+}
+
+// Fade out loader on window load
+window.addEventListener('load', hideLoader);
+// Safety fallback
+setTimeout(hideLoader, 3000);
+
 // ── Canvas Setup ────────────────────────────────────────────
 const canvas = document.querySelector('#gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -596,13 +610,90 @@ document.querySelector('#nick').addEventListener('input', e => {
   drawSkinCanvas();
 });
 
+// Bridge functions for index.html inline handlers
+window.setTheme = (theme, color) => {
+  if (theme) state.settings.theme = theme;
+  if (color) state.settings.color = color;
+  saveSettings();
+  const themeBtn = document.querySelector('#theme');
+  const colorBtn = document.querySelector('#color');
+  if (themeBtn && theme) themeBtn.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
+  if (colorBtn && color) colorBtn.textContent = color.charAt(0).toUpperCase() + color.slice(1);
+};
+
+window.setRegion = (reg) => {
+  state.settings.region = reg;
+  saveSettings();
+  const regBtn = document.querySelector('#region');
+  if (regBtn) {
+    const names = { na: 'North America', eu: 'Europe', as: 'Asia' };
+    regBtn.textContent = names[reg] || reg;
+  }
+};
+
+window.changeSetting = (el, val) => {
+  if (typeof el === 'string') {
+    state.settings[el] = val;
+    // Update dropdown text if applicable
+    const btn = document.querySelector(`#${el}`);
+    if (btn) btn.textContent = val;
+  } else if (el && el.id) {
+    const key = el.id === 'skipDeathScreen' ? 'skipResults' : el.id;
+    state.settings[key] = el.type === 'checkbox' ? el.checked : el.value;
+    if (el.id === 'animationDelay') {
+      document.querySelector('#animationDelayBadge').textContent = el.value + 'ms';
+      state.settings.animSpeed = parseInt(el.value);
+    }
+  }
+  saveSettings();
+  applySettings();
+};
+
+window.hideRankings = () => document.querySelector('#rankings').style.display = 'none';
+window.showRankings = () => document.querySelector('#rankings').style.display = 'flex';
+window.hideShop = () => document.querySelector('#shop').style.display = 'none';
+window.showShop = () => document.querySelector('#shop').style.display = 'flex';
+window.shopTab = (btn, tabId) => {
+  document.querySelectorAll('#shopNav li').forEach(li => li.classList.remove('active'));
+  if (btn) btn.parentElement.classList.add('active');
+  document.querySelectorAll('#shopContent li').forEach(li => li.classList.remove('active'));
+  document.querySelector(tabId).classList.add('active');
+};
+window.hideSkins = () => document.querySelector('#skins').style.display = 'none';
+window.openSkins = () => document.querySelector('#skins').style.display = 'flex';
+window.searchSkin = (q) => console.log('Searching skins:', q);
+window.clearSearch = () => console.log('Clearing search');
+window.setSkin = (url) => { if (url) { state.skinUrl = url; drawSkinCanvas(); } };
+window.hideModes = () => document.querySelector('#gamemodes').style.display = 'none';
+window.showModes = () => document.querySelector('#gamemodes').style.display = 'flex';
+
+// Map additional menu buttons
+const settingsBtn = document.querySelector('#settingsButton') || document.querySelector('#btn-open-settings');
+if (settingsBtn) {
+  settingsBtn.addEventListener('click', () => {
+    document.querySelector('#settings').style.display = 'flex';
+    openPanel('panel-settings');
+  });
+}
+window.hideSettings = () => document.querySelector('#settings').style.display = 'none';
+
+const moreServersBtn = document.querySelector('#moreServers');
+if (moreServersBtn) moreServersBtn.addEventListener('click', () => {
+  window.showModes();
+});
+
+const skinBtn = document.querySelector('#loginAvatar'); // Ripped index uses this as a button sometimes
+if (skinBtn) skinBtn.addEventListener('click', () => {
+  window.openSkins();
+});
+
 function startGame() {
   state.inGame = true;
   state.spectating = false;
   state.nick = document.querySelector('#nick').value || 'Player';
   initWorld();
-  menu.classList.add('hidden');
-  hud.classList.remove('hidden');
+  menu.style.display = 'none';
+  hud.style.display = 'block';
   showOverlayConnecting();
 }
 
@@ -611,8 +702,8 @@ function startSpectate() {
   state.inGame = false;
   state.nick = '';
   initWorld();
-  menu.classList.add('hidden');
-  hud.classList.remove('hidden');
+  menu.style.display = 'none';
+  hud.style.display = 'block';
 }
 
 function showOverlayConnecting() {
@@ -654,8 +745,8 @@ document.querySelector('#continue').addEventListener('click', () => {
 function returnToMenu() {
   state.inGame = false;
   state.spectating = false;
-  hud.classList.add('hidden');
-  menu.classList.remove('hidden');
+  hud.style.display = 'none';
+  menu.style.display = 'block';
   drawSkinCanvas();
 }
 
