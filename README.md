@@ -1,16 +1,18 @@
 # Germs.io Clone in Vite
 
-A faithful recreation of the [germs.io](https://germs.io) lobby/UI built with **Vite + React**, ready to deploy on Vercel.
+A faithful visual and functional clone of [germs.io](https://germs.io) built with **Vite** (vanilla JS + Canvas).
 
 ## Features
 
-- 🎮 Animated canvas background with floating cells, food pellets, and grid
-- 🏆 Rankings leaderboard panel (left)
-- ▶️ Play panel with name input, server/mode selection, login prompt, social links (center)
-- 🎨 Skins panel with tab navigation, search, custom skin URL (right)
-- ⚙️ Settings modal with Gameplay, Themes, Controls, and Region tabs
-- 📊 Match Results modal
-- 📱 Responsive (side panels hidden on smaller screens)
+- Full menu screen with nickname input, skin preview, play/spectate buttons
+- Animated canvas background on menu
+- Live gameplay: move your cell, eat food & other blobs, split, eject mass
+- Leaderboard, XP bar, minimap, chat, HUD
+- Settings panel: Gameplay, Themes, Controls (rebindable), Region
+- Skins panel with custom skin URL support
+- Party system (create/join with code)
+- Match results screen
+- Fully responsive
 
 ## Getting Started
 
@@ -19,28 +21,29 @@ npm install
 npm run dev
 ```
 
+## Build for Production
+
+```bash
+npm run build
+```
+
+The output goes to `dist/`.
+
 ## Deploy to Vercel
 
-1. Push to GitHub
-2. Import the repo on [vercel.com](https://vercel.com)
-3. Vercel will auto-detect Vite — no configuration needed
-4. Click **Deploy**
+1. Push this folder to a GitHub repo
+2. Import it in [vercel.com](https://vercel.com)
+3. Vercel auto-detects Vite — no config needed (the `vercel.json` handles SPA routing)
 
 Or use the Vercel CLI:
 
 ```bash
 npm i -g vercel
-vercel
-```
-
-## Build
-
-```bash
-npm run build      # outputs to dist/
-npm run preview    # preview the build locally
+vercel --prod
 ```
 
 ## Notes
 
-- This is a **frontend-only** clone of the germs.io UI/lobby. It does not include actual multiplayer game logic.
-- To add real gameplay, integrate a WebSocket server and canvas-based game loop.
+- This is a **frontend-only** clone. Real multiplayer would require a WebSocket server (not included).
+- All assets (logo, skins, social icons) are loaded directly from `https://germs.io` via their CDN.
+- Login/auth buttons are stubbed — implement OAuth server-side as needed.
