@@ -1,4 +1,4 @@
-# Germs.io Clone in Vite
+# Germs.io Clone
 
 A faithful visual and functional clone of [germs.io](https://germs.io) built with **Vite** (vanilla JS + Canvas).
 
