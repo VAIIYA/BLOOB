@@ -49,7 +49,7 @@ function loadSettings() {
   try {
     const saved = window.__germSettings;
     if (saved) Object.assign(state.settings, saved);
-  } catch {}
+  } catch { }
 }
 
 function saveSettings() {
@@ -73,8 +73,8 @@ window.addEventListener('resize', resizeCanvas);
 // ── Game World ───────────────────────────────────────────────
 const WORLD = { w: 6000, h: 6000 };
 const COLORS = [
-  '#e94560','#4ecdc4','#f7b731','#a29bfe','#fd79a8',
-  '#00b894','#e17055','#74b9ff','#55efc4','#ffeaa7'
+  '#e94560', '#4ecdc4', '#f7b731', '#a29bfe', '#fd79a8',
+  '#00b894', '#e17055', '#74b9ff', '#55efc4', '#ffeaa7'
 ];
 
 function randomColor() {
@@ -112,7 +112,7 @@ function initWorld() {
     do {
       ox = Math.random() * WORLD.w;
       oy = Math.random() * WORLD.h;
-    } while (Math.hypot(ox - WORLD.w/2, oy - WORLD.h/2) < 800);
+    } while (Math.hypot(ox - WORLD.w / 2, oy - WORLD.h / 2) < 800);
     state.others.push({
       x: ox, y: oy,
       r: massToRadius(mass),
@@ -144,7 +144,7 @@ function initWorld() {
   state.spawnGrace = 3.0; // 3 seconds of invincibility at spawn
 }
 
-const AI_NAMES = ['xXx_blob','FatCell','NomNom','SplitKing','TinyTerror','GermBoss','CellCrusher','BigMac','EatMore','SlimShady'];
+const AI_NAMES = ['xXx_blob', 'FatCell', 'NomNom', 'SplitKing', 'TinyTerror', 'GermBoss', 'CellCrusher', 'BigMac', 'EatMore', 'SlimShady'];
 function randomName() { return AI_NAMES[Math.floor(Math.random() * AI_NAMES.length)]; }
 
 function massToRadius(mass) { return Math.sqrt(mass) * 5; }
@@ -214,6 +214,8 @@ function update(dt) {
       if (xpLbl) xpLbl.textContent = `${xp}/50 XP`;
     }
 
+  } // end if (cells.length > 0)
+
   // Move AI blobs
   state.others.forEach(o => {
     o.x = Math.max(o.r, Math.min(WORLD.w - o.r, o.x + o.vx * 30 * dt));
@@ -250,8 +252,8 @@ function update(dt) {
   });
 
   // Track max mass
-  const totalMass = cells.reduce((s, c) => s + c.mass, 0);
-  if (totalMass > state.score.maxMass) state.score.maxMass = totalMass;
+  const currentMass = cells.reduce((s, c) => s + c.mass, 0);
+  if (currentMass > state.score.maxMass) state.score.maxMass = currentMass;
 
   // Eat AI
   cells.forEach(cell => {
@@ -718,15 +720,15 @@ document.querySelectorAll('.btn-group').forEach(group => {
 
 // Toggles
 [
-  ['opt-skip-results','skipResults'],
-  ['opt-auto-zoom','autoZoom'],
-  ['opt-mouse-arrow','mouseArrow'],
-  ['opt-show-mass','showMass'],
-  ['opt-hide-food','hideFood'],
-  ['opt-hide-border','hideBorder'],
-  ['opt-profanity','profanityFilter'],
-  ['opt-hide-xp','hideXP'],
-  ['opt-hide-chat','hideChat'],
+  ['opt-skip-results', 'skipResults'],
+  ['opt-auto-zoom', 'autoZoom'],
+  ['opt-mouse-arrow', 'mouseArrow'],
+  ['opt-show-mass', 'showMass'],
+  ['opt-hide-food', 'hideFood'],
+  ['opt-hide-border', 'hideBorder'],
+  ['opt-profanity', 'profanityFilter'],
+  ['opt-hide-xp', 'hideXP'],
+  ['opt-hide-chat', 'hideChat'],
 ].forEach(([id, key]) => {
   const el = document.getElementById(id);
   if (!el) return;
@@ -809,8 +811,8 @@ document.addEventListener('keydown', e => {
 
 document.getElementById('reset-controls').addEventListener('click', () => {
   state.settings.keybinds = {
-    feed:'W', split:'Space', doublesplit:'E',
-    triplesplit:'R', '16split':'T', freeze:'Q', vertical:'F', hideui:'H'
+    feed: 'W', split: 'Space', doublesplit: 'E',
+    triplesplit: 'R', '16split': 'T', freeze: 'Q', vertical: 'F', hideui: 'H'
   };
   document.querySelectorAll('.keybind-btn').forEach(btn => {
     btn.textContent = state.settings.keybinds[btn.dataset.action] || '?';
@@ -865,7 +867,7 @@ document.getElementById('party-join').addEventListener('click', () => {
 
 document.getElementById('party-copy-code').addEventListener('click', () => {
   const code = document.getElementById('party-code-val').textContent;
-  navigator.clipboard.writeText(code).catch(() => {});
+  navigator.clipboard.writeText(code).catch(() => { });
   document.getElementById('party-copy-code').textContent = 'Copied!';
   setTimeout(() => { document.getElementById('party-copy-code').textContent = 'Copy'; }, 2000);
 });
