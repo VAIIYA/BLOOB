@@ -1,4 +1,4 @@
-# Germs.io Clone
+# Germs.io Clone in Vite
 
 A faithful recreation of the [germs.io](https://germs.io) lobby/UI built with **Vite + React**, ready to deploy on Vercel.
 
